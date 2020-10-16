@@ -81,6 +81,9 @@
 		<Unit filename="/Users/lucadeslot/Documents/Cours/C/Pentamino_DESLOT_DUNAND/main.c">
 			<Option target="Pentamino_DESLOT_DUNAND"/>
 		</Unit>
+		<Unit filename="/Users/lucadeslot/Documents/Cours/C/Pentamino_DESLOT_DUNAND/main.h">
+			<Option target="Pentamino_DESLOT_DUNAND"/>
+		</Unit>
 		<Unit filename="/Users/lucadeslot/Documents/Cours/C/Pentamino_DESLOT_DUNAND/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>
