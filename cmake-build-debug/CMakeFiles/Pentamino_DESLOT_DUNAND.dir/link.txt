@@ -1,1 +1,1 @@
-/Library/Developer/CommandLineTools/usr/bin/cc -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk -Wl,-search_paths_first -Wl,-headerpad_max_install_names  CMakeFiles/Pentamino_DESLOT_DUNAND.dir/main.c.o  -o Pentamino_DESLOT_DUNAND 
+/usr/bin/cc -g   CMakeFiles/Pentamino_DESLOT_DUNAND.dir/main.c.o  -o Pentamino_DESLOT_DUNAND 
