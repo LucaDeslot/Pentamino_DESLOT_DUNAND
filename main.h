@@ -7,4 +7,6 @@
 
 #endif //PENTAMINO_DESLOT_DUNAND_MAIN_H
 
-void createPieces(int* pieces, char* levelNumber);
+void createPieces(int **pieces, char* levelNumber);
+
+int findPiecesNumber(FILE* file);
