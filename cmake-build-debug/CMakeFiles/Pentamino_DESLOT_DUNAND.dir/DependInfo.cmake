@@ -4,9 +4,10 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_C
-  "/Users/lucadeslot/Documents/Cours/C/Pentamino_DESLOT_DUNAND/main.c" "/Users/lucadeslot/Documents/Cours/C/Pentamino_DESLOT_DUNAND/cmake-build-debug/CMakeFiles/Pentamino_DESLOT_DUNAND.dir/main.c.o"
+  "/home/nathand/CLionProjects/Pentamino_DESLOT_DUNAND/main.c" "/home/nathand/CLionProjects/Pentamino_DESLOT_DUNAND/cmake-build-debug/CMakeFiles/Pentamino_DESLOT_DUNAND.dir/main.c.o"
+  "/home/nathand/CLionProjects/Pentamino_DESLOT_DUNAND/sdl_functions.c" "/home/nathand/CLionProjects/Pentamino_DESLOT_DUNAND/cmake-build-debug/CMakeFiles/Pentamino_DESLOT_DUNAND.dir/sdl_functions.c.o"
   )
-set(CMAKE_C_COMPILER_ID "AppleClang")
+set(CMAKE_C_COMPILER_ID "GNU")
 
 # The include file search paths:
 set(CMAKE_C_TARGET_INCLUDE_PATH

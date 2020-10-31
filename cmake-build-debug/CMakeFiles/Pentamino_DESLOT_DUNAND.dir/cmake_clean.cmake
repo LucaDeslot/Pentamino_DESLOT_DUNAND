@@ -1,5 +1,6 @@
 file(REMOVE_RECURSE
   "CMakeFiles/Pentamino_DESLOT_DUNAND.dir/main.c.o"
+  "CMakeFiles/Pentamino_DESLOT_DUNAND.dir/sdl_functions.c.o"
   "Pentamino_DESLOT_DUNAND"
   "Pentamino_DESLOT_DUNAND.pdb"
 )

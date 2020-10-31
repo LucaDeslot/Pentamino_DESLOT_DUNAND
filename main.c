@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include "main.h"
+#include "sdl_functions.h"
 
 int main() {
     bool exit=false;
@@ -11,6 +12,9 @@ int main() {
     int grid[10][6];
     int (*pieces) [MAX_SIZE][MAX_SIZE] = NULL; //Tableau dynamique de tableau 2D d'int, chaque rang du tableau correspond à une pièce
     createPieces(&pieces, "0");
+
+    displayPiece(&pieces,12,MAX_SIZE,MAX_SIZE);
+    //TODO: il faut que numberPieces soit dynamique, utiliser la fonction findPiecesNumber() ?
 
     free(pieces);
     return 0;

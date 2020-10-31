@@ -54,19 +54,19 @@ cmake_force:
 SHELL = /bin/sh
 
 # The CMake executable.
-CMAKE_COMMAND = /Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake
+CMAKE_COMMAND = /snap/clion/129/bin/cmake/linux/bin/cmake
 
 # The command to remove a file.
-RM = /Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -E rm -f
+RM = /snap/clion/129/bin/cmake/linux/bin/cmake -E rm -f
 
 # Escaping for special characters.
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/lucadeslot/Documents/Cours/C/Pentamino_DESLOT_DUNAND
+CMAKE_SOURCE_DIR = /home/nathand/CLionProjects/Pentamino_DESLOT_DUNAND
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/lucadeslot/Documents/Cours/C/Pentamino_DESLOT_DUNAND/cmake-build-debug
+CMAKE_BINARY_DIR = /home/nathand/CLionProjects/Pentamino_DESLOT_DUNAND/cmake-build-debug
 
 # Include any dependencies generated for this target.
 include CMakeFiles/Pentamino_DESLOT_DUNAND.dir/depend.make
@@ -79,28 +79,43 @@ include CMakeFiles/Pentamino_DESLOT_DUNAND.dir/flags.make
 
 CMakeFiles/Pentamino_DESLOT_DUNAND.dir/main.c.o: CMakeFiles/Pentamino_DESLOT_DUNAND.dir/flags.make
 CMakeFiles/Pentamino_DESLOT_DUNAND.dir/main.c.o: ../main.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/lucadeslot/Documents/Cours/C/Pentamino_DESLOT_DUNAND/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/Pentamino_DESLOT_DUNAND.dir/main.c.o"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/Pentamino_DESLOT_DUNAND.dir/main.c.o   -c /Users/lucadeslot/Documents/Cours/C/Pentamino_DESLOT_DUNAND/main.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/nathand/CLionProjects/Pentamino_DESLOT_DUNAND/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/Pentamino_DESLOT_DUNAND.dir/main.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/Pentamino_DESLOT_DUNAND.dir/main.c.o   -c /home/nathand/CLionProjects/Pentamino_DESLOT_DUNAND/main.c
 
 CMakeFiles/Pentamino_DESLOT_DUNAND.dir/main.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/Pentamino_DESLOT_DUNAND.dir/main.c.i"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/lucadeslot/Documents/Cours/C/Pentamino_DESLOT_DUNAND/main.c > CMakeFiles/Pentamino_DESLOT_DUNAND.dir/main.c.i
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/nathand/CLionProjects/Pentamino_DESLOT_DUNAND/main.c > CMakeFiles/Pentamino_DESLOT_DUNAND.dir/main.c.i
 
 CMakeFiles/Pentamino_DESLOT_DUNAND.dir/main.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/Pentamino_DESLOT_DUNAND.dir/main.c.s"
-	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/lucadeslot/Documents/Cours/C/Pentamino_DESLOT_DUNAND/main.c -o CMakeFiles/Pentamino_DESLOT_DUNAND.dir/main.c.s
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/nathand/CLionProjects/Pentamino_DESLOT_DUNAND/main.c -o CMakeFiles/Pentamino_DESLOT_DUNAND.dir/main.c.s
+
+CMakeFiles/Pentamino_DESLOT_DUNAND.dir/sdl_functions.c.o: CMakeFiles/Pentamino_DESLOT_DUNAND.dir/flags.make
+CMakeFiles/Pentamino_DESLOT_DUNAND.dir/sdl_functions.c.o: ../sdl_functions.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/nathand/CLionProjects/Pentamino_DESLOT_DUNAND/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/Pentamino_DESLOT_DUNAND.dir/sdl_functions.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/Pentamino_DESLOT_DUNAND.dir/sdl_functions.c.o   -c /home/nathand/CLionProjects/Pentamino_DESLOT_DUNAND/sdl_functions.c
+
+CMakeFiles/Pentamino_DESLOT_DUNAND.dir/sdl_functions.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/Pentamino_DESLOT_DUNAND.dir/sdl_functions.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/nathand/CLionProjects/Pentamino_DESLOT_DUNAND/sdl_functions.c > CMakeFiles/Pentamino_DESLOT_DUNAND.dir/sdl_functions.c.i
+
+CMakeFiles/Pentamino_DESLOT_DUNAND.dir/sdl_functions.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/Pentamino_DESLOT_DUNAND.dir/sdl_functions.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/nathand/CLionProjects/Pentamino_DESLOT_DUNAND/sdl_functions.c -o CMakeFiles/Pentamino_DESLOT_DUNAND.dir/sdl_functions.c.s
 
 # Object files for target Pentamino_DESLOT_DUNAND
 Pentamino_DESLOT_DUNAND_OBJECTS = \
-"CMakeFiles/Pentamino_DESLOT_DUNAND.dir/main.c.o"
+"CMakeFiles/Pentamino_DESLOT_DUNAND.dir/main.c.o" \
+"CMakeFiles/Pentamino_DESLOT_DUNAND.dir/sdl_functions.c.o"
 
 # External object files for target Pentamino_DESLOT_DUNAND
 Pentamino_DESLOT_DUNAND_EXTERNAL_OBJECTS =
 
 Pentamino_DESLOT_DUNAND: CMakeFiles/Pentamino_DESLOT_DUNAND.dir/main.c.o
+Pentamino_DESLOT_DUNAND: CMakeFiles/Pentamino_DESLOT_DUNAND.dir/sdl_functions.c.o
 Pentamino_DESLOT_DUNAND: CMakeFiles/Pentamino_DESLOT_DUNAND.dir/build.make
 Pentamino_DESLOT_DUNAND: CMakeFiles/Pentamino_DESLOT_DUNAND.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/lucadeslot/Documents/Cours/C/Pentamino_DESLOT_DUNAND/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking C executable Pentamino_DESLOT_DUNAND"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/nathand/CLionProjects/Pentamino_DESLOT_DUNAND/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking C executable Pentamino_DESLOT_DUNAND"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/Pentamino_DESLOT_DUNAND.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -113,6 +128,6 @@ CMakeFiles/Pentamino_DESLOT_DUNAND.dir/clean:
 .PHONY : CMakeFiles/Pentamino_DESLOT_DUNAND.dir/clean
 
 CMakeFiles/Pentamino_DESLOT_DUNAND.dir/depend:
-	cd /Users/lucadeslot/Documents/Cours/C/Pentamino_DESLOT_DUNAND/cmake-build-debug && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /Users/lucadeslot/Documents/Cours/C/Pentamino_DESLOT_DUNAND /Users/lucadeslot/Documents/Cours/C/Pentamino_DESLOT_DUNAND /Users/lucadeslot/Documents/Cours/C/Pentamino_DESLOT_DUNAND/cmake-build-debug /Users/lucadeslot/Documents/Cours/C/Pentamino_DESLOT_DUNAND/cmake-build-debug /Users/lucadeslot/Documents/Cours/C/Pentamino_DESLOT_DUNAND/cmake-build-debug/CMakeFiles/Pentamino_DESLOT_DUNAND.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/nathand/CLionProjects/Pentamino_DESLOT_DUNAND/cmake-build-debug && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/nathand/CLionProjects/Pentamino_DESLOT_DUNAND /home/nathand/CLionProjects/Pentamino_DESLOT_DUNAND /home/nathand/CLionProjects/Pentamino_DESLOT_DUNAND/cmake-build-debug /home/nathand/CLionProjects/Pentamino_DESLOT_DUNAND/cmake-build-debug /home/nathand/CLionProjects/Pentamino_DESLOT_DUNAND/cmake-build-debug/CMakeFiles/Pentamino_DESLOT_DUNAND.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/Pentamino_DESLOT_DUNAND.dir/depend
 

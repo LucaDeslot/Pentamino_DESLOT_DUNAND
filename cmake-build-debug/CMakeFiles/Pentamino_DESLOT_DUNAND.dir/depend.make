@@ -3,4 +3,8 @@
 
 CMakeFiles/Pentamino_DESLOT_DUNAND.dir/main.c.o: ../main.c
 CMakeFiles/Pentamino_DESLOT_DUNAND.dir/main.c.o: ../main.h
+CMakeFiles/Pentamino_DESLOT_DUNAND.dir/main.c.o: ../sdl_functions.h
+
+CMakeFiles/Pentamino_DESLOT_DUNAND.dir/sdl_functions.c.o: ../sdl_functions.c
+CMakeFiles/Pentamino_DESLOT_DUNAND.dir/sdl_functions.c.o: ../sdl_functions.h
 
