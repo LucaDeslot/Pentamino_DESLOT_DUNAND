@@ -34,22 +34,22 @@ void createPieces(int (**pieces)[MAX_SIZE][MAX_SIZE], char* levelNumber){
     //ouverture du fichier et allocation mémoire du tableau de pièce
     FILE* file = NULL;
     file = fopen(fileName, "r");// ../ car l'exe se créer dans CMakeFiles/
-    *pieces = malloc(sizeof(int[MAX_SIZE][MAX_SIZE])*findPiecesNumber(file)); //12 = nb pièces
+    *pieces = malloc(sizeof(int[MAX_SIZE][MAX_SIZE])*findPiecesNumber(file));
 
-    char readChar = 0;
-    int numPiece = 0;
-    bool endPiece = true;
+    char readChar = 0; //Pour lire le charactère du fichier
+    int numPiece = 0; //numéro de la pièce lu
+    bool endPiece = false;
 
-    for (int i = 0; i < 67; i++){readChar = fgetc(file);} // passe le tableau de jeu :TODO MALLOC de grid
+    for (int i = 0; i < 67; i++){readChar = fgetc(file);} // passe le tableau de jeu : TODO MALLOC de grid
 
     do{
         for (int x = 0; x < MAX_SIZE; ++x) {
             for (int y = 0; y < MAX_SIZE; ++y) {
-                if (endPiece){
+                if (!endPiece){
                     readChar = fgetc(file);
                 }
                 if (readChar == '#') {
-                    endPiece = true;
+                    endPiece = false;
                     (*pieces)[numPiece][x][y] = 1;
                 } else if(readChar == '\n'){
                     if(y < MAX_SIZE) { //Si on atteint la fin de la ligne et que on a pas atteint MAX_SIZE on rempli par des 0
@@ -58,9 +58,9 @@ void createPieces(int (**pieces)[MAX_SIZE][MAX_SIZE], char* levelNumber){
                             y++;
                         }
                         readChar = fgetc(file);
-                        endPiece = false;
+                        endPiece = true;
                         if(readChar == '\n'){
-                            endPiece = true;
+                            endPiece = false;
                             x++;
                             while(x < MAX_SIZE){
                                 for (y = 0; y < MAX_SIZE; ++y) {
@@ -75,7 +75,7 @@ void createPieces(int (**pieces)[MAX_SIZE][MAX_SIZE], char* levelNumber){
 //
                 } else {
                     (*pieces)[numPiece][x][y] = 0;
-                    endPiece = true;
+                    endPiece = false;
                 }
             }
         }

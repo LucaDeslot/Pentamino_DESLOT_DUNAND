@@ -1,0 +1,22 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/lucadeslot/Documents/Cours/C/Pentamino_DESLOT_DUNAND/main.c
+stdlib.h
+-
+stdio.h
+-
+stdbool.h
+-
+string.h
+-
+main.h
+/Users/lucadeslot/Documents/Cours/C/Pentamino_DESLOT_DUNAND/main.h
+
+/Users/lucadeslot/Documents/Cours/C/Pentamino_DESLOT_DUNAND/main.h
+
