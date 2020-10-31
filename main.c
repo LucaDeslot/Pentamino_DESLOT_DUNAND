@@ -38,44 +38,37 @@ void createPieces(int (**pieces)[MAX_SIZE][MAX_SIZE], char* levelNumber){
 
     char readChar = 0; //Pour lire le charactère du fichier
     int numPiece = 0; //numéro de la pièce lu
-    bool endPiece = false;
 
     for (int i = 0; i < 67; i++){readChar = fgetc(file);} // passe le tableau de jeu : TODO MALLOC de grid
 
+    readChar = fgetc(file);
     do{
         for (int x = 0; x < MAX_SIZE; ++x) {
             for (int y = 0; y < MAX_SIZE; ++y) {
-                if (!endPiece){
-                    readChar = fgetc(file);
-                }
-                if (readChar == '#') {
-                    endPiece = false;
-                    (*pieces)[numPiece][x][y] = 1;
-                } else if(readChar == '\n'){
-                    if(y < MAX_SIZE) { //Si on atteint la fin de la ligne et que on a pas atteint MAX_SIZE on rempli par des 0
-                        while(y < MAX_SIZE){
-                            (*pieces)[numPiece][x][y] = 0;
-                            y++;
-                        }
-                        readChar = fgetc(file);
-                        endPiece = true;
-                        if(readChar == '\n'){
-                            endPiece = false;
-                            x++;
-                            while(x < MAX_SIZE){
-                                for (y = 0; y < MAX_SIZE; ++y) {
-                                    (*pieces)[numPiece][x][y] = 0;
-                                }
-                                x++;
-                            }
-                            y = MAX_SIZE;
-                            numPiece++;
-                        }
+                if(readChar == '\n'){ // si on arrive à la fin de la ligne
+                    while(y < MAX_SIZE){//Si on atteint la fin de la ligne et que on a pas atteint MAX_SIZE on rempli par des 0
+                        (*pieces)[numPiece][x][y] = 0;
+                        y++;
                     }
-//
-                } else {
+                    readChar = fgetc(file);
+                    if(readChar == '\n'){ // si on est encore en fin de ligne -> fin de la pièce
+                        x++;
+                        while(x < MAX_SIZE){ //on rempli de 0 les lignes restantes.
+                            for (y = 0; y < MAX_SIZE; ++y) {
+                                (*pieces)[numPiece][x][y] = 0;
+                            }
+                            x++;
+                        }
+                        numPiece++; // on passe à la pièce suivante
+                        readChar = fgetc(file); // on lit la première partie de la pièce suivante
+                    }
+
+                } else if (readChar == '#'){ // 1 correspond à la présence d'une pièce
+                    readChar = fgetc(file);
+                    (*pieces)[numPiece][x][y] = 1;
+                } else { // si readChar == ' ' || readChar == EOF
+                    readChar = fgetc(file);
                     (*pieces)[numPiece][x][y] = 0;
-                    endPiece = false;
                 }
             }
         }
@@ -87,10 +80,6 @@ void createPieces(int (**pieces)[MAX_SIZE][MAX_SIZE], char* levelNumber){
     else{
         printf("Le fichier n'a pas pu etre ouvert fonction createPieces");
     }
-
-
-
-
     free(fileName);
 }
 
