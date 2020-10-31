@@ -36,7 +36,7 @@ void createPieces(int (**pieces)[MAX_SIZE][MAX_SIZE], char* levelNumber){
     file = fopen(fileName, "r");// ../ car l'exe se créer dans CMakeFiles/
     *pieces = malloc(sizeof(int[MAX_SIZE][MAX_SIZE])*findPiecesNumber(file)); //12 = nb pièces
 
-    char readChar = 0;
+    char readChar = 1;
     int numPiece = 0;
     bool endPiece = true;
 
