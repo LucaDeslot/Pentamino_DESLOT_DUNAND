@@ -38,7 +38,7 @@ void createPieces(int (**pieces)[MAX_SIZE][MAX_SIZE], char* levelNumber){
 
     char readChar = 0;
     int numPiece = 0;
-    bool endPiece = false;
+    bool endPiece = true;
 
     for (int i = 0; i < 67; i++){readChar = fgetc(file);} // passe le tableau de jeu :TODO MALLOC de grid
 
