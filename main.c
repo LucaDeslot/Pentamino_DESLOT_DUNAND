@@ -9,26 +9,10 @@ int main() {
     bool exit=false;
 
     int grid[10][6];
-    int (*pieces) [MAX_SIZE][MAX_SIZE] = NULL;
-
-    //tableau de pointeur pour les pièces -> chaque pointeur renvoie vers un int[][] qui est une piece
-
-
-
+    int (*pieces) [MAX_SIZE][MAX_SIZE] = NULL; //Tableau dynamique de tableau 2D d'int, chaque rang du tableau correspond à une pièce
     createPieces(&pieces, "0");
 
-
-
-    for (int i = 0; i < 12; ++i) {
-        for (int x = 0; x < MAX_SIZE; ++x) {
-            for (int y = 0; y < MAX_SIZE; ++y) {
-                printf("%d",pieces[i][x][y]);
-            }
-            printf("\n");
-        }
-        printf("\n");
-    }
-
+    free(pieces);
     return 0;
 }
 
@@ -41,23 +25,23 @@ void createPieces(int (**pieces)[MAX_SIZE][MAX_SIZE], char* levelNumber){
     else{
         fileName=(char*)malloc(sizeof(char)*14);
     }
+    //concaténation pour le nom du fichier à parcourir
     strcpy(fileName,"../level");
     strcat(fileName, levelNumber);
     strcat(fileName, ".txt");
 
+    //ouverture du fichier et allocation mémoire du tableau de pièce
     FILE* file = NULL;
     file = fopen(fileName, "r");// ../ car l'exe se créer dans CMakeFiles/
     *pieces = malloc(sizeof(int[MAX_SIZE][MAX_SIZE])*findPiecesNumber(file)); //12 = nb pièces
 
     char readChar = 0;
-    bool emptyRow = true;
     int numPiece = 0;
     bool endPiece = true;
 
     for (int i = 0; i < 67; i++){readChar = fgetc(file);} // passe le tableau de jeu :TODO MALLOC de grid
 
     do{
-        //endPiece = true;
         for (int x = 0; x < MAX_SIZE; ++x) {
             for (int y = 0; y < MAX_SIZE; ++y) {
                 if (endPiece){
@@ -85,32 +69,16 @@ void createPieces(int (**pieces)[MAX_SIZE][MAX_SIZE], char* levelNumber){
                             }
                             y = MAX_SIZE;
                             numPiece++;
-                        } //else {
-                        //endPiece = false;
-                        //}
+                        }
                     }
-//                        if(emptyRow){ // si à la fin de la ligne emptyRow = true alors il n'y a pas/plus de pièce.
-//                            emptyRow = false;
-//                            numPiece++;
-//                        } else {
-//                            emptyRow = true;
 //
-//                        }
-                } else { // readChar = ' '
+                } else {
                     (*pieces)[numPiece][x][y] = 0;
                     endPiece = true;
                 }
             }
         }
     }while (readChar != EOF);
-
-    /*for (int i = 0; i < 12; i++) {
-        for (int x = 0; x < MAX_SIZE; x++) {
-            for (int y = 0; y < MAX_SIZE; y++) {
-                (*pieces)[i][x][y] = 1;
-            }
-        }
-    }*/
 
     if(file!=NULL){
         fclose(file);
