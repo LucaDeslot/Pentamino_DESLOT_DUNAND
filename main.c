@@ -18,6 +18,7 @@ int main() {
 
 void createPieces(int (**pieces)[MAX_SIZE][MAX_SIZE], char* levelNumber){
     //nom fichier
+    //blablabladdddd
     char* fileName;
     if(atoi(levelNumber)>=10){
         fileName=(char*)malloc(sizeof(char)*15);
