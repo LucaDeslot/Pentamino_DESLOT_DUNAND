@@ -9,35 +9,30 @@ int main() {
     bool exit=false;
 
     int grid[10][6];
-    int (*pieces) [MAX_SIZE][MAX_SIZE];
+    int (*pieces) [MAX_SIZE][MAX_SIZE] = NULL;
 
     //tableau de pointeur pour les pièces -> chaque pointeur renvoie vers un int[][] qui est une piece
 
 
 
-    createPieces(pieces, "0");
+    createPieces(&pieces, "0");
 
-    /*for (int i = 0; i < 12; ++i) {
-        for (int x = 0; x < MAX_SIZE; ++x) {
-            for (int y = 0; y < MAX_SIZE; ++y) {
-                *(pieces+i)[x][y] = 1;
-            }
-        }
-    }*/
+
 
     for (int i = 0; i < 12; ++i) {
         for (int x = 0; x < MAX_SIZE; ++x) {
             for (int y = 0; y < MAX_SIZE; ++y) {
-                printf("%i",*(pieces+i)[x][y]);
+                printf("%d",pieces[i][x][y]);
             }
             printf("\n");
         }
+        printf("\n");
     }
 
     return 0;
 }
 
-void createPieces(int* (*pieces[MAX_SIZE][MAX_SIZE]), char* levelNumber){
+void createPieces(int (**pieces)[MAX_SIZE][MAX_SIZE], char* levelNumber){
     //nom fichier
     char* fileName;
     if(atoi(levelNumber)>=10){
@@ -52,7 +47,7 @@ void createPieces(int* (*pieces[MAX_SIZE][MAX_SIZE]), char* levelNumber){
 
     FILE* file = NULL;
     file = fopen(fileName, "r");// ../ car l'exe se créer dans CMakeFiles/
-    pieces = malloc(sizeof(int[MAX_SIZE][MAX_SIZE])*findPiecesNumber(file)); //12 = nb pièces
+    *pieces = malloc(sizeof(int[MAX_SIZE][MAX_SIZE])*findPiecesNumber(file)); //12 = nb pièces
 
     char readChar = 0;
     bool emptyRow = true;
@@ -61,39 +56,39 @@ void createPieces(int* (*pieces[MAX_SIZE][MAX_SIZE]), char* levelNumber){
 
     for (int i = 0; i < 67; i++){readChar = fgetc(file);} // passe le tableau de jeu :TODO MALLOC de grid
 
-    do {
+    do{
         //endPiece = true;
-            for (int x = 0; x < MAX_SIZE; ++x) {
-                for (int y = 0; y < MAX_SIZE; ++y) {
-                    if (endPiece){
-                        readChar = fgetc(file);
-                    }
-                    if (readChar == '#') {
-                        endPiece = true;
-                        (pieces + numPiece)[x][y] = 1;
-                    } else if(readChar == '\n'){
-                        if(y < MAX_SIZE) { //Si on atteint la fin de la ligne et que on a pas atteint MAX_SIZE on rempli par des 0
-                            while(y < MAX_SIZE){
-                                (pieces + numPiece)[x][y] = 0;
-                                y++;
-                            }
-                            readChar = fgetc(file);
-                            endPiece = false;
-                            if(readChar == '\n'){
-                                endPiece = true;
-                                x++;
-                                while(x < MAX_SIZE){
-                                    for (y = 0; y < MAX_SIZE; ++y) {
-                                        (pieces + numPiece)[x][y] = 0;
-                                    }
-                                    x++;
-                                }
-                                y = MAX_SIZE;
-                                numPiece++;
-                            } //else {
-                                //endPiece = false;
-                            //}
+        for (int x = 0; x < MAX_SIZE; ++x) {
+            for (int y = 0; y < MAX_SIZE; ++y) {
+                if (endPiece){
+                    readChar = fgetc(file);
+                }
+                if (readChar == '#') {
+                    endPiece = true;
+                    (*pieces)[numPiece][x][y] = 1;
+                } else if(readChar == '\n'){
+                    if(y < MAX_SIZE) { //Si on atteint la fin de la ligne et que on a pas atteint MAX_SIZE on rempli par des 0
+                        while(y < MAX_SIZE){
+                            (*pieces)[numPiece][x][y] = 0;
+                            y++;
                         }
+                        readChar = fgetc(file);
+                        endPiece = false;
+                        if(readChar == '\n'){
+                            endPiece = true;
+                            x++;
+                            while(x < MAX_SIZE){
+                                for (y = 0; y < MAX_SIZE; ++y) {
+                                    (*pieces)[numPiece][x][y] = 0;
+                                }
+                                x++;
+                            }
+                            y = MAX_SIZE;
+                            numPiece++;
+                        } //else {
+                        //endPiece = false;
+                        //}
+                    }
 //                        if(emptyRow){ // si à la fin de la ligne emptyRow = true alors il n'y a pas/plus de pièce.
 //                            emptyRow = false;
 //                            numPiece++;
@@ -101,23 +96,21 @@ void createPieces(int* (*pieces[MAX_SIZE][MAX_SIZE]), char* levelNumber){
 //                            emptyRow = true;
 //
 //                        }
-                    } else { // readChar = ' '
-                        (pieces + numPiece)[x][y] = 0;
-                        endPiece = true;
-                    }
+                } else { // readChar = ' '
+                    (*pieces)[numPiece][x][y] = 0;
+                    endPiece = true;
                 }
             }
+        }
     }while (readChar != EOF);
 
-    for (int i = 0; i < 12; i++) {
+    /*for (int i = 0; i < 12; i++) {
         for (int x = 0; x < MAX_SIZE; x++) {
             for (int y = 0; y < MAX_SIZE; y++) {
-                printf("%i",(pieces+i)[y][x]);
+                (*pieces)[i][x][y] = 1;
             }
-            printf("\n");
         }
-        printf("\n");
-    }
+    }*/
 
     if(file!=NULL){
         fclose(file);

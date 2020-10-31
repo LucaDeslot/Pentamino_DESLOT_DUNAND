@@ -9,6 +9,6 @@
 
 #define MAX_SIZE 5
 
-void createPieces(int* (*pieces[MAX_SIZE][MAX_SIZE]), char* levelNumber);
+void createPieces(int (**pieces)[MAX_SIZE][MAX_SIZE], char* levelNumber);
 
 int findPiecesNumber(FILE* file);
