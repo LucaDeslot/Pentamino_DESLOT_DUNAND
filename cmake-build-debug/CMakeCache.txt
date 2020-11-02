@@ -212,6 +212,9 @@ Pentamino_DESLOT_DUNAND_SOURCE_DIR:STATIC=/Users/lucadeslot/Documents/Cours/C/Pe
 //Path to a program.
 ProcessorCount_cmd_sysctl:FILEPATH=/usr/sbin/sysctl
 
+//The directory containing a CMake configuration file for SDL2.
+SDL2_DIR:PATH=/usr/local/lib/cmake/SDL2
+
 
 ########################
 # INTERNAL cache entries

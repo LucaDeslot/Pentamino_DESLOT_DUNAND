@@ -1,7 +1,7 @@
 //
 // Created by nathand on 31/10/2020.
 //
-#include <SDL2/SDL.h>
+#include "SDL2/SDL.h"
 #include <stdbool.h>
 
 #include "sdl_functions.h"
