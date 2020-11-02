@@ -1,3 +1,0 @@
-/home/nathand/CLionProjects/Pentamino_DESLOT_DUNAND/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/nathand/CLionProjects/Pentamino_DESLOT_DUNAND/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/nathand/CLionProjects/Pentamino_DESLOT_DUNAND/cmake-build-debug/CMakeFiles/Pentamino_DESLOT_DUNAND.dir

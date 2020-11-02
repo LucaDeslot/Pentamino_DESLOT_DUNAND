@@ -1,1 +1,0 @@
-/usr/bin/cc -g   CMakeFiles/Pentamino_DESLOT_DUNAND.dir/main.c.o CMakeFiles/Pentamino_DESLOT_DUNAND.dir/sdl_functions.c.o  -o Pentamino_DESLOT_DUNAND  -lSDL2 
