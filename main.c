@@ -43,7 +43,7 @@ void createPieces(int (**pieces)[MAX_SIZE][MAX_SIZE], char* levelNumber){
     char readChar = 0; //Pour lire le charactère du fichier
     int numPiece = 0; //numéro de la pièce lu
 
-    for (int i = 0; i < 67; i++){readChar = fgetc(file);} // passe le tableau de jeu : TODO MALLOC de grid
+    for (int i = 0; i < 67; i++){readChar = fgetc(file);} // passe le tableau de jeu : TODO MALLOC de gri conviction d
 
     readChar = fgetc(file);
     do{
