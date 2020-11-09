@@ -1,0 +1,26 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/nathand/CLionProjects/Pentamino_DESLOT_DUNAND/main.c
+stdlib.h
+-
+stdio.h
+-
+stdbool.h
+-
+string.h
+-
+main.h
+/home/nathand/CLionProjects/Pentamino_DESLOT_DUNAND/main.h
+sdl_functions.h
+/home/nathand/CLionProjects/Pentamino_DESLOT_DUNAND/sdl_functions.h
+
+/home/nathand/CLionProjects/Pentamino_DESLOT_DUNAND/main.h
+
+/home/nathand/CLionProjects/Pentamino_DESLOT_DUNAND/sdl_functions.h
+

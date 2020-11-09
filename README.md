@@ -13,6 +13,14 @@ Disponible lorsque le jeu sera en phase de test.
 ## Equipe
 Projet développé par DUNAND Nathan et DESLOT Luca
 
+## Rapport hebdomadaire
+#### *Semaine du 19 au 25 octobre*
+Commencement du développement avec la mise en place des différents fichiers du projet et configuration du Git. Début du développement avec la fonction qui permet de mettre dans un tablau 3D toutes les pièces d'un fichier txt.
+#### *Semaine du 26 octobre au 1er novembre (vacances de la Toussaint)*
+Installation de la SDL2 sur le projet, résolution des problèmes de compatibilité entre la SDL2 et CLion (notre IDE). Implémentation de la fonction qui permet d'afficher une pièce sur un écran avec variables globales qui permettront de pouvoir régler dynamiquement la mise en page.
+#### *Semaine du 9 au 16 novembre*
+En cours ...
+
 
 
 
