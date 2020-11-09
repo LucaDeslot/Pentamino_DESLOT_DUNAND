@@ -9,9 +9,16 @@
 int main() {
     bool exit=false;
 
-    int grid[10][6];
+    int** grid = NULL;
     int (*pieces) [MAX_SIZE][MAX_SIZE] = NULL; //Tableau dynamique de tableau 2D d'int, chaque rang du tableau correspond à une pièce
-    createPieces(&pieces, "0");
+    createPieces(&pieces, "0", &grid);
+
+    for (int i = 0; i < 6; ++i) {
+        for (int j = 0; j < 10; ++j) {
+            printf("%i", grid[j][i]);
+        }
+        printf("\n");
+    }
 
     displayPiece(&pieces,12,MAX_SIZE,MAX_SIZE);
     //TODO: il faut que numberPieces soit dynamique, utiliser la fonction findPiecesNumber() ?
@@ -20,9 +27,8 @@ int main() {
     return 0;
 }
 
-void createPieces(int (**pieces)[MAX_SIZE][MAX_SIZE], char* levelNumber){
+void createPieces(int (**pieces)[MAX_SIZE][MAX_SIZE], char* levelNumber, int*** grid){
     //nom fichier
-    //blablabladdddd
     char* fileName;
     if(atoi(levelNumber)>=10){
         fileName=(char*)malloc(sizeof(char)*15);
@@ -43,7 +49,31 @@ void createPieces(int (**pieces)[MAX_SIZE][MAX_SIZE], char* levelNumber){
     char readChar = 0; //Pour lire le charactère du fichier
     int numPiece = 0; //numéro de la pièce lu
 
-    for (int i = 0; i < 67; i++){readChar = fgetc(file);} // passe le tableau de jeu : TODO MALLOC de gri conviction d
+    int endGrid = 0;
+    int row = 0;
+    int col = 0;
+
+    readChar = fgetc(file);
+    while (!endGrid){
+        while (readChar != '\n'){
+            col++;
+            readChar = fgetc(file);
+        }
+        readChar = fgetc(file);
+        if (readChar == '\n'){
+            endGrid = 1;
+        } else {
+            row++;
+        }
+    }
+
+    *grid = (int**) malloc(col*sizeof(int*));
+    for (int i = 0; i < col; i++){
+        (*grid)[i] = (int*) malloc(row*sizeof(int));
+        for(int j = 0; j < row; j++){
+            (*grid)[i][j] = 0;
+        }
+    }
 
     readChar = fgetc(file);
     do{
