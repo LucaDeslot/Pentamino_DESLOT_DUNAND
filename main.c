@@ -20,7 +20,7 @@ int main() {
         printf("\n");
     }
 
-    displayPiece(&pieces,12,MAX_SIZE,MAX_SIZE);
+    displayPieces(&pieces,12,MAX_SIZE,MAX_SIZE);
     //TODO: il faut que numberPieces soit dynamique, utiliser la fonction findPiecesNumber() ?
 
     free(pieces);
