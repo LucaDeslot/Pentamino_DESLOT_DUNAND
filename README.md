@@ -19,7 +19,9 @@ Commencement du développement avec la mise en place des différents fichiers du
 #### *Semaine du 26 octobre au 1er novembre (vacances de la Toussaint)*
 Installation de la SDL2 sur le projet, résolution des problèmes de compatibilité entre la SDL2 et CLion (notre IDE). Implémentation de la fonction qui permet d'afficher une pièce sur un écran avec variables globales qui permettront de pouvoir régler dynamiquement la mise en page.
 #### *Semaine du 9 au 16 novembre*
-En cours ...
+Debug d'une partie du code, et allocation dynamique de plusieurs tableaux multidimensionnels. Début de l'implémentation de l'affichage de toutes les pièces sur une même fenêtre avec création de variables (globales ou non) qui permettent de rgler la mise en page dynamiquement.
+### *Semaine 16 au 23 novembre*
+Finalisation de l'implémentation de la fonction qui affiche toutes les pièces du fichier txt sur une seule fenêtre. Ajout de variables globales ou non qui permettent de mettre en page dynamiquement l'affichage des pièces. Début de l'implémentation de l'affichage du plateau de jeu.
 
 
 
