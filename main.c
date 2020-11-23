@@ -16,14 +16,12 @@ int main() {
     SDL_Window* window=SDL_CreateWindow("TESTWINDOW", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 800, 0);
     if(window == NULL){//Erreur fenetre
         printf("Erreur lors de la creation d'une fenetre : %s",SDL_GetError());
-        exit(EXIT_FAILURE);
+        //exit(EXIT_FAILURE);
     }
     //Création du renderer
     SDL_Renderer* renderer=SDL_CreateRenderer(window,-1,SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     SDL_SetRenderDrawColor(renderer, 255,255,255,255);
     SDL_RenderClear(renderer);
-
-    bool exit=false;
 
     if(SDL_Init(SDL_INIT_VIDEO) < 0){// Initialisation de la SDL
         printf("Erreur d’initialisation de la SDL: %s",SDL_GetError());
@@ -31,7 +29,6 @@ int main() {
         return EXIT_FAILURE;
     }// Créer la fenêtre
 
-    window = SDL_CreateWindow("Pentamino DESLOT DUNAND", SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 1080, 720, SDL_WINDOW_RESIZABLE);
     if(window == NULL){// En cas d’erreur
         printf("Erreur de la creation d’une fenetre: %s",SDL_GetError());
         SDL_Quit();
@@ -39,9 +36,6 @@ int main() {
     }
 
     // Mettre en place un contexte de rendu de l’écran
-    SDL_Renderer* renderer;
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-
     int** grid = NULL;
     int (*pieces) [MAX_SIZE][MAX_SIZE] = NULL; //Tableau dynamique de tableau 2D d'int, chaque rang du tableau correspond à une pièce
     createPieces(&pieces, "0", &grid);
@@ -52,8 +46,9 @@ int main() {
     SDL_RenderFillRect(renderer,&pieceArea);
 
     displayPieces(&window,&pieces,12,MAX_SIZE,MAX_SIZE);
-
+    afficherPlateau(10, 6, &window);
     SDL_RenderPresent(renderer);
+
 
     while(!exit){//boucle principale du jeu
         //TODO: il faut que numberPieces soit dynamique, utiliser la fonction findPiecesNumber() ?
@@ -84,12 +79,10 @@ int main() {
                     }
             }
     }
-    free(pieces);//libération
-    afficherPlateau(10, 6, &window);
+
     //displayPiece(&pieces,findPiecesNumber("0"),MAX_SIZE,MAX_SIZE);
     free(pieces);
     SDL_DestroyWindow(window);
-    SDL_Delay(5000);
     return 0;
 }
 
