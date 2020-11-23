@@ -13,12 +13,7 @@ int main() {
     int (*pieces) [MAX_SIZE][MAX_SIZE] = NULL; //Tableau dynamique de tableau 2D d'int, chaque rang du tableau correspond à une pièce
     createPieces(&pieces, "0", &grid);
 
-    for (int i = 0; i < 6; ++i) {
-        for (int j = 0; j < 10; ++j) {
-            printf("%i", grid[j][i]);
-        }
-        printf("\n");
-    }
+    displayPiece(&pieces,findPiecesNumber("0"),MAX_SIZE,MAX_SIZE);
 
     displayPieces(&pieces,12,MAX_SIZE,MAX_SIZE);
     //TODO: il faut que numberPieces soit dynamique, utiliser la fonction findPiecesNumber() ?
@@ -28,23 +23,12 @@ int main() {
 }
 
 void createPieces(int (**pieces)[MAX_SIZE][MAX_SIZE], char* levelNumber, int*** grid){
-    //nom fichier
-    char* fileName;
-    if(atoi(levelNumber)>=10){
-        fileName=(char*)malloc(sizeof(char)*15);
-    }
-    else{
-        fileName=(char*)malloc(sizeof(char)*14);
-    }
-    //concaténation pour le nom du fichier à parcourir
-    strcpy(fileName,"../level");
-    strcat(fileName, levelNumber);
-    strcat(fileName, ".txt");
 
     //ouverture du fichier et allocation mémoire du tableau de pièce
-    FILE* file = NULL;
-    file = fopen(fileName, "r");// ../ car l'exe se créer dans CMakeFiles/
-    *pieces = malloc(sizeof(int[MAX_SIZE][MAX_SIZE])*findPiecesNumber(file));
+    char* fileName = getFileNameFromLevel(levelNumber);
+    FILE* file = fopen(fileName, "r");
+    free(fileName);
+    *pieces = malloc(sizeof(int[MAX_SIZE][MAX_SIZE])*findPiecesNumber(levelNumber));
 
     char readChar = 0; //Pour lire le charactère du fichier
     int numPiece = 0; //numéro de la pièce lu
@@ -114,14 +98,14 @@ void createPieces(int (**pieces)[MAX_SIZE][MAX_SIZE], char* levelNumber, int*** 
     else{
         printf("Le fichier n'a pas pu etre ouvert fonction createPieces");
     }
-    free(fileName);
 }
 
 //Parcours le fichier pour trouver le nombre de pièces
-int findPiecesNumber(FILE* file){
+int findPiecesNumber(char *levelNumber){
     int readChar = 0;
     int nbPiece = 0;
     bool emptyRow = true;
+    FILE* file = fopen(getFileNameFromLevel(levelNumber), "r");
 
     do {
         readChar = fgetc(file);
@@ -136,6 +120,21 @@ int findPiecesNumber(FILE* file){
             }
         }
     }while(readChar != EOF);
-    rewind(file); // on retourne au début du fichier pour les autres fonctions
+    fclose(file);
     return nbPiece; // Le code compte à partir de la première pièce, inutile de retirer la grille en faisant -1
+}
+
+char* getFileNameFromLevel(char* levelNumber) {
+    char* fileName;
+    if(atoi(levelNumber)>=10){
+        fileName=(char*)malloc(sizeof(char)*15);
+    }
+    else{
+        fileName=(char*)malloc(sizeof(char)*14);
+    }
+    //concaténation pour le nom du fichier à parcourir
+    strcpy(fileName,"../level");// ../ car l'exe se créer dans CMakeFiles/
+    strcat(fileName, levelNumber);
+    strcat(fileName, ".txt");
+    return fileName;
 }
