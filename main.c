@@ -7,18 +7,72 @@
 #include "sdl_functions.h"
 
 int main() {
-    bool exit=false;
+    SDL_Window* window;// Déclaration de la fenêtre
+    SDL_Event event;//évènement SDL par exemple saisie clavier
+    bool exit=false;//sortir de la boucle
+
+    if(SDL_Init(SDL_INIT_VIDEO) < 0){// Initialisation de la SDL
+        printf("Erreur d’initialisation de la SDL: %s",SDL_GetError());
+        SDL_Quit();
+        return EXIT_FAILURE;
+    }// Créer la fenêtre
+
+    window = SDL_CreateWindow("Pentamino DESLOT DUNAND", SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED, 1080, 720, SDL_WINDOW_RESIZABLE);
+    if(window == NULL){// En cas d’erreur
+        printf("Erreur de la creation d’une fenetre: %s",SDL_GetError());
+        SDL_Quit();
+        return EXIT_FAILURE;
+    }
+
+    // Mettre en place un contexte de rendu de l’écran
+    SDL_Renderer* renderer;
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
     int** grid = NULL;
     int (*pieces) [MAX_SIZE][MAX_SIZE] = NULL; //Tableau dynamique de tableau 2D d'int, chaque rang du tableau correspond à une pièce
     createPieces(&pieces, "0", &grid);
 
-    displayPiece(&pieces,findPiecesNumber("0"),MAX_SIZE,MAX_SIZE);
+    SDL_SetRenderDrawColor(renderer,0,0,0,255);//couleur du fond
+    SDL_RenderClear(renderer);//permet de nettoyer le renderer et de pouvoir appliquer d'autres couleur (?)
 
-    displayPieces(&pieces,12,MAX_SIZE,MAX_SIZE);
-    //TODO: il faut que numberPieces soit dynamique, utiliser la fonction findPiecesNumber() ?
+    SDL_SetRenderDrawColor(renderer,255,255,255,255);//couleur du fond de la parie des pièces
+    SDL_Rect pieceArea={0,0,250,720};
+    SDL_RenderFillRect(renderer,&pieceArea);
 
-    free(pieces);
+    displayPieces(&window,&pieces,12,MAX_SIZE,MAX_SIZE);
+
+    SDL_RenderPresent(renderer);
+
+    while(!exit){//boucle principale du jeu
+        //TODO: il faut que numberPieces soit dynamique, utiliser la fonction findPiecesNumber() ?
+
+        while( SDL_PollEvent( &event ) )
+            switch(event.type){
+                case SDL_QUIT:exit = true;
+                    break;
+                case SDL_KEYDOWN:
+                    switch(event.key.keysym.sym){
+                        case SDLK_ESCAPE:
+                            exit=true;
+                        /*case SDLK_q://on saisit la touche q au clavier
+                            //exit = true;
+                            break;*/
+                        /*case SDLK_UP:
+                            direction=UP;
+                            break;
+                        case SDLK_DOWN:
+                            direction=DOWN;
+                            break;
+                        case SDLK_RIGHT:
+                            direction=RIGHT;
+                            break;
+                        case SDLK_LEFT:
+                            direction=LEFT;
+                            break;*/
+                    }
+            }
+    }
+    free(pieces);//libération
     return 0;
 }
 

@@ -6,55 +6,36 @@
 
 #include "sdl_functions.h"
 
-void displayPieces(int (**pieces)[NUMBER_PART_PIECE][NUMBER_PART_PIECE],int numberPieces,int firstDimensionTab,int secondDimensionTab)//affiche toutes les pièces
+void displayPieces(SDL_Window (**window),int (**pieces)[NUMBER_PART_PIECE][NUMBER_PART_PIECE],int numberPieces,int firstDimensionTab,int secondDimensionTab)//affiche toutes les pièces
 {
     //Déclaration
-    SDL_Window* window;
     SDL_Renderer* renderer;
     SDL_Rect partPiece[12][NUMBER_PART_PIECE];//sous partie des pièces
     //TODO: malloc à faire pour le nombre de pièce
 
-    //Création d'une fenêtre
-    window=SDL_CreateWindow("TESTWINDOW", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1000, 1000, 0);
-    if(window == NULL){//Erreur fenetre
-        printf("Erreur lors de la creation d'une fenetre : %s",SDL_GetError());
-        exit(EXIT_FAILURE);
-    }
-    //Création du renderer
-    renderer=SDL_CreateRenderer(window,-1,SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-    if(renderer==NULL){//Erreur renderer
-        printf("Erreur lors de la creation d'un renderer : %s", SDL_GetError());
-        exit(EXIT_FAILURE);
-    }
+    //Obtention du renderer à partir de la window
+    renderer=SDL_GetRenderer(*window);
 
-    SDL_SetRenderDrawColor(renderer,0,0,0,255);//couleur du fond
-    SDL_RenderClear(renderer);//permet de nettoyer le renderer et de pouvoir appliquer d'autres couleur (?)
+    if(renderer==NULL){
+        printf("Erreur lors de l'initialisation du renderer : %s", SDL_GetError());
+    }
 
     SDL_SetRenderDrawColor(renderer,255,0,255,255);//couleur des cases
 
     int shiftOrdinate=0;//décallage des ordonnées
     int shiftAbscissa=0;//décallage des abscisses
 
-    for(int i=0;i<12;i++){
+    for(int i=0;i<12;i++){//TODO  12 doit être dynamique ici
         displayPiece(pieces,i,numberPieces,&partPiece,shiftOrdinate,shiftAbscissa);
         SDL_RenderFillRects(renderer, partPiece[i], NUMBER_PART_PIECE);
         shiftOrdinate+=0;
         shiftAbscissa+=75;
     }
 
-    //SDL_RenderFillRects(renderer, partPiece[1], NUMBER_PART_PIECE);
     if(SDL_RenderFillRects(renderer, partPiece[0], NUMBER_PART_PIECE)<0){//on colore les parties de la pièce
         printf("Erreur lors de la coloration des parties d'une piece : %s", SDL_GetError());
         exit(EXIT_FAILURE);
     }
-
-    SDL_RenderPresent(renderer);//rendu et affichage
-    SDL_Delay(5000);
-
-    //liberation mémoire
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
-    SDL_Quit();
 }
 
 void displayPiece(int (**pieces)[NUMBER_PART_PIECE][NUMBER_PART_PIECE],int pieceAfficher,int numberPiece,SDL_Rect (*partPiece)[12][NUMBER_PART_PIECE],int shiftOrdinate,int shiftAbscissa)//affiche une pièce
