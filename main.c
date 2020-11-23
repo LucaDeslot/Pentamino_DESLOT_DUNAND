@@ -2,20 +2,37 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
+#include <SDL2/SDL.h>
 
 #include "main.h"
 #include "sdl_functions.h"
 
 int main() {
+    SDL_Init(SDL_INIT_VIDEO);
+
+    //création de la fenêtre
+    SDL_Window* window=SDL_CreateWindow("TESTWINDOW", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 800, 0);
+    if(window == NULL){//Erreur fenetre
+        printf("Erreur lors de la creation d'une fenetre : %s",SDL_GetError());
+        exit(EXIT_FAILURE);
+    }
+    //Création du renderer
+    SDL_Renderer* renderer=SDL_CreateRenderer(window,-1,SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    SDL_SetRenderDrawColor(renderer, 255,255,255,255);
+    SDL_RenderClear(renderer);
+
     bool exit=false;
 
     int** grid = NULL;
     int (*pieces) [MAX_SIZE][MAX_SIZE] = NULL; //Tableau dynamique de tableau 2D d'int, chaque rang du tableau correspond à une pièce
     createPieces(&pieces, "0", &grid);
 
-    displayPiece(&pieces,findPiecesNumber("0"),MAX_SIZE,MAX_SIZE);
-
+    afficherPlateau(10, 6, &window);
+    //displayPiece(&pieces,findPiecesNumber("0"),MAX_SIZE,MAX_SIZE);
+    SDL_RenderPresent(renderer);
+    SDL_Delay(5000);
     free(pieces);
+    SDL_DestroyWindow(window);
     return 0;
 }
 

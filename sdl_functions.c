@@ -114,3 +114,37 @@ void displayPiece(int (**pieces)[5][5],int numberPieces,int firstDimensionTab,in
     SDL_DestroyWindow(window);
     SDL_Quit();
 }
+
+void afficherPlateau(int x, int y, SDL_Window **window) {
+
+    //Déclaration
+    SDL_Rect *rect = malloc(x * y * sizeof(SDL_Rect));
+    SDL_Renderer* renderer = SDL_GetRenderer(*window);
+    int width = x;
+    int gridStartX;
+    SDL_GetWindowSize(*window, &gridStartX, NULL);
+    gridStartX /= 2;
+    SDL_SetRenderDrawColor(renderer,182,182,182,255); //Couleur des cases du plateau
+
+    rect[0].x = gridStartX;
+    rect[0].y = 200;
+    rect[0].w = 25;
+    rect[0].h = 25;
+
+    int gridSize = x * y;
+    for (int i = 1; i < gridSize; ++i) {
+        if(i == x){ //retour à la ligne
+            x += width;
+            rect[i].x = gridStartX;
+            rect[i].y = rect[i-1].h + rect[i-1].y + 2;
+        } else {
+            rect[i].x = rect[i-1].x + rect[i-1].w + 2;
+            rect[i].y = rect[i-1].y;
+        }
+        rect[i].w = 25;
+        rect[i].h = 25;
+    }
+
+    SDL_RenderFillRects(renderer, rect, gridSize);
+
+}

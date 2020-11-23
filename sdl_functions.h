@@ -12,3 +12,6 @@
 #define SPACING_PX 2
 
 void displayPiece(int (**pieces)[5][5],int numberPieces,int firstDimensionTab, int secondDimensionTab);//pour le moment elle ne prend rien
+
+void afficherPlateau(int x, int y, SDL_Window **window);
+
