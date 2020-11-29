@@ -126,10 +126,12 @@ int main() {
                         }
                     }
 
-                    for (int i = 0; i < NUMBER_PART_PIECE; ++i) {
-                        selectedPiece[i] = &SDL_Pieces[rankPieceSelected][i];
-                        selectedPieceSavedCord[i].x = selectedPiece[i]->x;
-                        selectedPieceSavedCord[i].y = selectedPiece[i]->y;
+                    if (isPieceSelected) {
+                        for (int i = 0; i < NUMBER_PART_PIECE; ++i) {
+                            selectedPiece[i] = &SDL_Pieces[rankPieceSelected][i];
+                            selectedPieceSavedCord[i].x = selectedPiece[i]->x;
+                            selectedPieceSavedCord[i].y = selectedPiece[i]->y;
+                        }
                     }
                     break;
 
