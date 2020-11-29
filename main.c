@@ -20,9 +20,7 @@ int main() {
         //exit(EXIT_FAILURE);
     }
     //Création du renderer
-    SDL_Renderer* renderer=SDL_CreateRenderer(window,-1,SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-    SDL_SetRenderDrawColor(renderer, 255,255,255,255);
-    SDL_RenderClear(renderer);
+    SDL_Renderer* renderer=SDL_CreateRenderer(window,-1,0);
 
     if(SDL_Init(SDL_INIT_VIDEO) < 0){// Initialisation de la SDL
         printf("Erreur d’initialisation de la SDL: %s",SDL_GetError());
@@ -42,13 +40,7 @@ int main() {
     createPieces(&pieces, "0", &grid);
 
 
-    SDL_SetRenderDrawColor(renderer,255,255,255,255);//couleur du fond de la parie des pièces
-    SDL_Rect pieceArea={0,0,250,720};
-    SDL_RenderFillRect(renderer,&pieceArea);
 
-    displayPieces(&window,&SDL_Pieces,&pieces,12,MAX_SIZE,MAX_SIZE);
-    afficherPlateau(10, 6, &window);
-    SDL_RenderPresent(renderer);
 
 
     SDL_Rect** selectedPiece = malloc(sizeof(SDL_Rect*)*5);
@@ -56,9 +48,11 @@ int main() {
     int isPieceSelected = 0;
     SDL_Point mousePosition;
     SDL_Point clickedPoint;
-    int rankPieceSelected;
+    int rankPieceSelected = -1;
     while(!exit){//boucle principale du jeu
         //TODO: il faut que numberPieces soit dynamique, utiliser la fonction findPiecesNumber() ?
+
+
 
         while( SDL_PollEvent( &event ) )
             switch(event.type){
@@ -136,20 +130,33 @@ int main() {
                     break;
 
             }
+
+        SDL_SetRenderDrawColor(renderer, 255,255,255,255);
+        SDL_RenderClear(renderer);
+
         for (int i = 0; i < 12; ++i) {
             for (int j = 0; j <NUMBER_PART_PIECE; ++j) {
                 for (int k = 0; k < NUMBER_PART_PIECE; ++k) {
-                    if(isPieceSelected && SDL_Pieces[i][j].x == selectedPiece[k]->x && SDL_Pieces[i][j].y == selectedPiece[k]->y && SDL_Pieces[i][j].h == selectedPiece[k]->h && SDL_Pieces[i][j].w == selectedPiece[k]->w ){
-                        SDL_SetRenderDrawColor(renderer,0,0,0,255);
-                        SDL_RenderFillRect(renderer, &SDL_Pieces[i][j]);
+                    //if(isPieceSelected && SDL_Pieces[i][j].x == selectedPiece[k]->x && SDL_Pieces[i][j].y == selectedPiece[k]->y && SDL_Pieces[i][j].h == selectedPiece[k]->h && SDL_Pieces[i][j].w == selectedPiece[k]->w ){
+                    if(isPieceSelected){
+
+                        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+                        // if(SDL_Pieces[i][j].x == mousePosition.x  || SDL_Pieces[i][j].x == selectedPieceSavedCord[k].x){
+                        SDL_RenderFillRect(renderer, selectedPiece[k]);
+                        // }
+                        //}
+                    } else {
 
                     }
-                    SDL_RenderPresent(renderer);
                 }
             }
 
 
         }
+
+        displayPieces(&window,rankPieceSelected ,&SDL_Pieces, &pieces, 12, MAX_SIZE, MAX_SIZE);
+        afficherPlateau(10, 6, &window);
+        SDL_RenderPresent(renderer);
     }
 
     //displayPiece(&pieces,findPiecesNumber("0"),MAX_SIZE,MAX_SIZE);

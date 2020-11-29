@@ -6,7 +6,7 @@
 
 #include "sdl_functions.h"
 
-void displayPieces(SDL_Window (**window),SDL_Rect (*partPiece)[12][NUMBER_PART_PIECE],int (**pieces)[NUMBER_PART_PIECE][NUMBER_PART_PIECE],int numberPieces,int firstDimensionTab,int secondDimensionTab)//affiche toutes les pièces
+void displayPieces(SDL_Window (**window),int selectedRect,SDL_Rect (*partPiece)[12][NUMBER_PART_PIECE],int (**pieces)[NUMBER_PART_PIECE][NUMBER_PART_PIECE],int numberPieces,int firstDimensionTab,int secondDimensionTab)//affiche toutes les pièces
 {
     //Déclaration
     SDL_Renderer* renderer;
@@ -25,8 +25,11 @@ void displayPieces(SDL_Window (**window),SDL_Rect (*partPiece)[12][NUMBER_PART_P
     int shiftAbscissa=0;//décallage des abscisses
 
     for(int i=0;i<12;i++){//TODO  12 doit être dynamique ici
-        displayPiece(pieces,i,numberPieces,partPiece,shiftOrdinate,shiftAbscissa);
-        SDL_RenderFillRects(renderer, (*partPiece)[i], NUMBER_PART_PIECE);
+
+        if (selectedRect != i){
+            displayPiece(pieces,i,numberPieces,partPiece,shiftOrdinate,shiftAbscissa);
+            SDL_RenderFillRects(renderer, (*partPiece)[i], NUMBER_PART_PIECE);
+        }
         shiftOrdinate+=0;
         shiftAbscissa+=75;
     }
