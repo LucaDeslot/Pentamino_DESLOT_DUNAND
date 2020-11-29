@@ -6,11 +6,10 @@
 
 #include "sdl_functions.h"
 
-void displayPieces(SDL_Window (**window),int (**pieces)[NUMBER_PART_PIECE][NUMBER_PART_PIECE],int numberPieces,int firstDimensionTab,int secondDimensionTab)//affiche toutes les pièces
+void displayPieces(SDL_Window (**window),SDL_Rect (*partPiece)[12][NUMBER_PART_PIECE],int (**pieces)[NUMBER_PART_PIECE][NUMBER_PART_PIECE],int numberPieces,int firstDimensionTab,int secondDimensionTab)//affiche toutes les pièces
 {
     //Déclaration
     SDL_Renderer* renderer;
-    SDL_Rect partPiece[12][NUMBER_PART_PIECE];//sous partie des pièces
     //TODO: malloc à faire pour le nombre de pièce
 
     //Obtention du renderer à partir de la window
@@ -26,13 +25,13 @@ void displayPieces(SDL_Window (**window),int (**pieces)[NUMBER_PART_PIECE][NUMBE
     int shiftAbscissa=0;//décallage des abscisses
 
     for(int i=0;i<12;i++){//TODO  12 doit être dynamique ici
-        displayPiece(pieces,i,numberPieces,&partPiece,shiftOrdinate,shiftAbscissa);
-        SDL_RenderFillRects(renderer, partPiece[i], NUMBER_PART_PIECE);
+        displayPiece(pieces,i,numberPieces,partPiece,shiftOrdinate,shiftAbscissa);
+        SDL_RenderFillRects(renderer, (*partPiece)[i], NUMBER_PART_PIECE);
         shiftOrdinate+=0;
         shiftAbscissa+=75;
     }
 
-    if(SDL_RenderFillRects(renderer, partPiece[0], NUMBER_PART_PIECE)<0){//on colore les parties de la pièce
+    if(SDL_RenderFillRects(renderer, (*partPiece)[0], NUMBER_PART_PIECE)<0){//on colore les parties de la pièce
         printf("Erreur lors de la coloration des parties d'une piece : %s", SDL_GetError());
         exit(EXIT_FAILURE);
     }

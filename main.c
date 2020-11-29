@@ -11,6 +11,7 @@ int main() {
     bool exit=false;//sortir de la boucle
     SDL_Event event;//évènement SDL par exemple saisie clavier
     SDL_Init(SDL_INIT_VIDEO);
+    SDL_Rect SDL_Pieces[12][NUMBER_PART_PIECE];
 
     //création de la fenêtre
     SDL_Window* window=SDL_CreateWindow("TESTWINDOW", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 800, 0);
@@ -45,11 +46,17 @@ int main() {
     SDL_Rect pieceArea={0,0,250,720};
     SDL_RenderFillRect(renderer,&pieceArea);
 
-    displayPieces(&window,&pieces,12,MAX_SIZE,MAX_SIZE);
+    displayPieces(&window,&SDL_Pieces,&pieces,12,MAX_SIZE,MAX_SIZE);
     afficherPlateau(10, 6, &window);
     SDL_RenderPresent(renderer);
 
 
+    SDL_Rect** selectedPiece = malloc(sizeof(SDL_Rect*)*5);
+    SDL_Rect selectedPieceSavedCord[NUMBER_PART_PIECE];
+    int isPieceSelected = 0;
+    SDL_Point mousePosition;
+    SDL_Point clickedPoint;
+    int rankPieceSelected;
     while(!exit){//boucle principale du jeu
         //TODO: il faut que numberPieces soit dynamique, utiliser la fonction findPiecesNumber() ?
 
@@ -61,6 +68,7 @@ int main() {
                     switch(event.key.keysym.sym){
                         case SDLK_ESCAPE:
                             exit=true;
+                            break;
                         /*case SDLK_q://on saisit la touche q au clavier
                             //exit = true;
                             break;*/
@@ -77,11 +85,74 @@ int main() {
                             direction=LEFT;
                             break;*/
                     }
+                    break;
+
+                case SDL_MOUSEMOTION:
+                    mousePosition.x = event.motion.x;
+                    mousePosition.y = event.motion.y;
+
+                    if(isPieceSelected){
+                        selectedPiece[0]->x = mousePosition.x;
+                        selectedPiece[0]->y = mousePosition.y;
+                        for (int i = 1; i < NUMBER_PART_PIECE; ++i) {
+                            if (selectedPieceSavedCord[i].x < selectedPieceSavedCord[0].x){
+                                selectedPiece[i]->x = selectedPiece[0]->x - (selectedPieceSavedCord[0].x - selectedPieceSavedCord[i].x);
+                            } else if (selectedPieceSavedCord[i].x >= selectedPieceSavedCord[0].x){
+                                selectedPiece[i]->x = selectedPiece[0]->x + (selectedPieceSavedCord[i].x - selectedPieceSavedCord[0].x);
+                            }
+
+                            if (selectedPieceSavedCord[i].y < selectedPieceSavedCord[0].y){
+                                selectedPiece[i]->y = selectedPiece[0]->y - (selectedPieceSavedCord[0].y - selectedPieceSavedCord[i].y);
+                            } else if (selectedPieceSavedCord[i].y >= selectedPieceSavedCord[0].y){
+                                selectedPiece[i]->y = selectedPiece[0]->y + (selectedPieceSavedCord[i].y - selectedPieceSavedCord[0].y);
+                            }
+                        }
+                    }
+                    break;
+
+                case SDL_MOUSEBUTTONUP:
+
+                    break;
+
+                case SDL_MOUSEBUTTONDOWN:
+                    for (int i = 0; i < 12; ++i) {
+                        for (int j = 0; j < NUMBER_PART_PIECE; ++j) {
+                            if(SDL_PointInRect(&mousePosition,&SDL_Pieces[i][j])){
+                                rankPieceSelected = i;
+                                clickedPoint.y = SDL_Pieces[i][0].y;
+                                clickedPoint.x = SDL_Pieces[i][0].x;
+                                isPieceSelected = 1;
+                            }
+                        }
+                    }
+
+                    for (int i = 0; i < NUMBER_PART_PIECE; ++i) {
+                        selectedPiece[i] = &SDL_Pieces[rankPieceSelected][i];
+                        selectedPieceSavedCord[i].x = selectedPiece[i]->x;
+                        selectedPieceSavedCord[i].y = selectedPiece[i]->y;
+                    }
+                    break;
+
             }
+        for (int i = 0; i < 12; ++i) {
+            for (int j = 0; j <NUMBER_PART_PIECE; ++j) {
+                for (int k = 0; k < NUMBER_PART_PIECE; ++k) {
+                    if(isPieceSelected && SDL_Pieces[i][j].x == selectedPiece[k]->x && SDL_Pieces[i][j].y == selectedPiece[k]->y && SDL_Pieces[i][j].h == selectedPiece[k]->h && SDL_Pieces[i][j].w == selectedPiece[k]->w ){
+                        SDL_SetRenderDrawColor(renderer,0,0,0,255);
+                        SDL_RenderFillRect(renderer, &SDL_Pieces[i][j]);
+
+                    }
+                    SDL_RenderPresent(renderer);
+                }
+            }
+
+
+        }
     }
 
     //displayPiece(&pieces,findPiecesNumber("0"),MAX_SIZE,MAX_SIZE);
     free(pieces);
+    free(selectedPiece);
     SDL_DestroyWindow(window);
     return 0;
 }
