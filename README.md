@@ -24,6 +24,6 @@ Debug d'une partie du code, et allocation dynamique de plusieurs tableaux multid
 Finalisation de l'implémentation de la fonction qui affiche toutes les pièces du fichier txt sur une seule fenêtre. Ajout de variables globales ou non qui permettent de mettre en page dynamiquement l'affichage des pièces. Début de l'implémentation de l'affichage du plateau de jeu.
 
 #### *Semaine du 23 au 30 novembre*
-Ajout du drag and drop pour déplacer les pièces, affichage des pièces et du plateau de jeu sur une même fenêtre.
+Commencement du drag and drop pour déplacer les pièces (drag fonctionnel) sur la grille, affichage des pièces et du plateau de jeu sur une même fenêtre.
 
 
