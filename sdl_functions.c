@@ -105,7 +105,7 @@ void displayPiece(int (**pieces)[NUMBER_PART_PIECE][NUMBER_PART_PIECE],int piece
     }
 }
 
-void afficherPlateau(int x, int y, SDL_Window **window) {
+SDL_Rect * displayGrid(int x, int y, SDL_Window **window) {
 
     //Déclaration
     SDL_Rect *rect = malloc(x * y * sizeof(SDL_Rect));
@@ -137,4 +137,33 @@ void afficherPlateau(int x, int y, SDL_Window **window) {
 
     SDL_RenderFillRects(renderer, rect, gridSize);
 
+    return rect;
+
+}
+
+int isPieceOverGrid(SDL_Rect *piece, SDL_Rect *grid, int gridWidth, int gridHeight) {
+    int isOver = 0;
+    int pX, pY, pH, pW, gX, gY, gH, gW;
+    for (int i = 0; i < NUMBER_PART_PIECE; ++i) {
+        pX = piece[i].x;
+        pY = piece[i].y;
+        pH = piece[i].h;
+        pW = piece[i].w;
+        for (int j = 0; j < gridWidth*gridHeight; ++j) {
+            gX = grid[j].x;
+            gY = grid[j].y;
+            gH = grid[j].h;
+            gW = grid[j].w;
+            if(pX >= gX && pX <= gX + gW){
+                if((pY + pH > gY && pY + pH < gY + gH) || (pY > gY && pY < gY + gH)){
+                    isOver = 1;
+                }
+            } else if (pY >= gY && pY <= gY + gH){
+                if ((pX + pW > gX && pX + pW < gX + gW) || (pX < gX + gW && pX > gX)){
+                    isOver = 1;
+                }
+            }
+        }
+    }
+    return isOver;
 }

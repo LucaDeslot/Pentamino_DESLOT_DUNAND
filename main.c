@@ -40,15 +40,13 @@ int main() {
     createPieces(&pieces, "0", &grid);
 
 
-
-
-
     SDL_Rect** selectedPiece = malloc(sizeof(SDL_Rect*)*5);
     SDL_Rect selectedPieceSavedCord[NUMBER_PART_PIECE];
     int isPieceSelected = 0;
     SDL_Point mousePosition;
     SDL_Point clickedPoint;
     int rankPieceSelected = -1;
+    SDL_Rect* gridSquares;
     while(!exit){//boucle principale du jeu
         //TODO: il faut que numberPieces soit dynamique, utiliser la fonction findPiecesNumber() ?
 
@@ -154,9 +152,13 @@ int main() {
 
         }
 
+        gridSquares = displayGrid(10, 6, &window);
         displayPieces(&window,rankPieceSelected ,&SDL_Pieces, &pieces, 12, MAX_SIZE, MAX_SIZE);
-        afficherPlateau(10, 6, &window);
         SDL_RenderPresent(renderer);
+
+        if(isPieceOverGrid(*selectedPiece,gridSquares,10,6)){
+            printf("Bonjour Paris");
+        }
     }
 
     //displayPiece(&pieces,findPiecesNumber("0"),MAX_SIZE,MAX_SIZE);

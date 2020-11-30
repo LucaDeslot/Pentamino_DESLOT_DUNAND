@@ -16,5 +16,7 @@
 void displayPieces(SDL_Window (**window),int selectedRect,SDL_Rect (*partPiece)[12][NUMBER_PART_PIECE],int (**pieces)[NUMBER_PART_PIECE][NUMBER_PART_PIECE],int numberPieces,int firstDimensionTab,int secondDimensionTab);//affiche toutes les pièces
 void displayPiece(int (**pieces)[NUMBER_PART_PIECE][NUMBER_PART_PIECE], int pieceAfficher,int numberPiece, SDL_Rect (*partPiece)[12][NUMBER_PART_PIECE],int shiftOrdinate,int shiftAbscissa);//affiche une pièce
 
-void afficherPlateau(int x, int y, SDL_Window **window);
+SDL_Rect * displayGrid(int x, int y, SDL_Window **window);
+
+int isPieceOverGrid(SDL_Rect *piece, SDL_Rect *grid, int gridWidth, int gridHeight);
 
