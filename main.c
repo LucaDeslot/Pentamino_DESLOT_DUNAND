@@ -12,12 +12,12 @@ int main() {
     SDL_Event event;//évènement SDL par exemple saisie clavier
     SDL_Init(SDL_INIT_VIDEO);
     SDL_Rect SDL_Pieces[12][NUMBER_PART_PIECE];
+    //TODO: remplacer le 12 par du dynamisme
 
     //création de la fenêtre
-    SDL_Window* window=SDL_CreateWindow("TESTWINDOW", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 800, 0);
+    SDL_Window* window=SDL_CreateWindow("Pentamino DESLOT DUNAND", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WIDTH_SCREEN, HEIGHT_SCREEN, 0);
     if(window == NULL){//Erreur fenetre
         printf("Erreur lors de la creation d'une fenetre : %s",SDL_GetError());
-        //exit(EXIT_FAILURE);
     }
     //Création du renderer
     SDL_Renderer* renderer=SDL_CreateRenderer(window,-1,0);
@@ -33,6 +33,7 @@ int main() {
         SDL_Quit();
         return EXIT_FAILURE;
     }
+
 
     // Mettre en place un contexte de rendu de l’écran
     int** grid = NULL;
@@ -126,11 +127,18 @@ int main() {
                         }
                     }
                     break;
-
             }
 
-        SDL_SetRenderDrawColor(renderer, 255,255,255,255);
+        SDL_SetRenderDrawColor(renderer, 255,255,255,255);//couleur du fond
         SDL_RenderClear(renderer);
+
+        SDL_Rect partDisplayPiece={0,0,WIDTH_SCREEN/4,HEIGHT_SCREEN};//partie gauche de l'écran qui contient l'affichage des pièces
+        SDL_SetRenderDrawColor(renderer, 125, 125, 125, 0);
+        SDL_RenderFillRect(renderer,&partDisplayPiece);
+
+        SDL_Rect partDispalyScore={0,HEIGHT_SCREEN-(HEIGHT_SCREEN/4),WIDTH_SCREEN,HEIGHT_SCREEN/4};//partie basse de la fenêtre, affichage des scores
+        SDL_SetRenderDrawColor(renderer, 125, 125, 125, 0);
+        SDL_RenderFillRect(renderer,&partDispalyScore);
 
         for (int i = 0; i < 12; ++i) {
             for (int j = 0; j <NUMBER_PART_PIECE; ++j) {
@@ -138,7 +146,7 @@ int main() {
                     //if(isPieceSelected && SDL_Pieces[i][j].x == selectedPiece[k]->x && SDL_Pieces[i][j].y == selectedPiece[k]->y && SDL_Pieces[i][j].h == selectedPiece[k]->h && SDL_Pieces[i][j].w == selectedPiece[k]->w ){
                     if(isPieceSelected){
 
-                        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+                        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);//couleur des pièces sélectionnées au drag and drop
                         // if(SDL_Pieces[i][j].x == mousePosition.x  || SDL_Pieces[i][j].x == selectedPieceSavedCord[k].x){
                         SDL_RenderFillRect(renderer, selectedPiece[k]);
                         // }
@@ -161,7 +169,6 @@ int main() {
         }
     }
 
-    //displayPiece(&pieces,findPiecesNumber("0"),MAX_SIZE,MAX_SIZE);
     free(pieces);
     free(selectedPiece);
     SDL_DestroyWindow(window);

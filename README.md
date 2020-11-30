@@ -26,4 +26,5 @@ Finalisation de l'implémentation de la fonction qui affiche toutes les pièces 
 #### *Semaine du 23 au 30 novembre*
 Commencement du drag and drop pour déplacer les pièces (drag fonctionnel) sur la grille, affichage des pièces et du plateau de jeu sur une même fenêtre.
 
-
+#### *Semaine du 30 au 7 décembre*
+Ajout de variables globales pour dynamiser le programme, ajout d'éléments graphiques à l'interface de jeu. Modifications mineures dans le code. Ajout de la fonction de détection de la pièce sur le plateau de jeu.
