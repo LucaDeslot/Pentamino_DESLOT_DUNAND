@@ -22,5 +22,5 @@ void displayPiece(int (**pieces)[NUMBER_PART_PIECE][NUMBER_PART_PIECE], int piec
 
 SDL_Rect * displayGrid(int x, int y, SDL_Window **window);
 
-int isPieceOverGrid(SDL_Rect *piece, SDL_Rect *grid, int gridWidth, int gridHeight);
+int isSquareOverGrid(SDL_Rect *square, SDL_Rect *grid, SDL_Renderer **renderer, int gridSize);
 
