@@ -8,7 +8,6 @@
 
 #endif //PENTAMINO_DESLOT_DUNAND_SDL_FUNCTIONS_H
 
-#define PIECE_SIZE 25
 #define PIECE_SIZE_PX 15
 #define PIECE_SIZE_GRID_PX 70
 #define SPACING_PX_GRID 5
@@ -17,10 +16,21 @@
 #define HEIGHT_SCREEN 720
 #define NUMBER_PART_PIECE 5//nombre de carré d'affichage d'une pièce, ici 5 par 5
 
-void displayPieces(SDL_Window (**window),int selectedRect,SDL_Rect (*partPiece)[12][NUMBER_PART_PIECE],int (**pieces)[NUMBER_PART_PIECE][NUMBER_PART_PIECE],int numberPieces,int firstDimensionTab,int secondDimensionTab);//affiche toutes les pièces
-void displayPiece(int (**pieces)[NUMBER_PART_PIECE][NUMBER_PART_PIECE], int pieceAfficher,int numberPiece, SDL_Rect (*partPiece)[12][NUMBER_PART_PIECE],int shiftOrdinate,int shiftAbscissa);//affiche une pièce
+struct piece {
+    SDL_Rect rects[5];
+    int r;
+    int g;
+    int b;
+};
+
+void initColor(SDL_Color (*color)[12]);
+
+void displayPieces(SDL_Window (**window),int selectedRect,struct piece (*partPiece)[12],int (**pieces)[NUMBER_PART_PIECE][NUMBER_PART_PIECE],int numberPieces,int firstDimensionTab,int secondDimensionTab);//affiche toutes les pièces
+void displayPiece(int (**pieces)[NUMBER_PART_PIECE][NUMBER_PART_PIECE], int pieceAfficher,int numberPiece, struct piece (*partPiece)[12],int shiftOrdinate,int shiftAbscissa);//affiche une pièce
 
 SDL_Rect * displayGrid(int x, int y, SDL_Window **window);
 
 int isSquareOverGrid(SDL_Rect *square, SDL_Rect *grid, SDL_Renderer **renderer, int gridSize);
+
+void setSizePiece(SDL_Rect **piece, int set);
 
