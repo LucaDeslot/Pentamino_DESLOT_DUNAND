@@ -11,7 +11,7 @@ int main() {
     bool exit=false;//sortir de la boucle
     SDL_Event event;//évènement SDL par exemple saisie clavier
     SDL_Init(SDL_INIT_VIDEO);
-    struct piece SDL_Pieces[12];
+    SDL_Rect SDL_Pieces[12][NUMBER_PART_PIECE];
     //TODO: remplacer le 12 par du dynamisme
 
     //création de la fenêtre
@@ -61,12 +61,28 @@ int main() {
                         case SDLK_ESCAPE:
                             exit=true;
                             break;
+                        /*case SDLK_q://on saisit la touche q au clavier
+                            //exit = true;
+                            break;*/
+                        /*case SDLK_UP:
+                            direction=UP;
+                            break;
+                        case SDLK_DOWN:
+                            direction=DOWN;
+                            break;
+                        case SDLK_RIGHT:
+                            direction=RIGHT;
+                            break;
+                        case SDLK_LEFT:
+                            direction=LEFT;
+                            break;*/
                     }
                     break;
 
                 case SDL_MOUSEMOTION:
                     mousePosition.x = event.motion.x;
                     mousePosition.y = event.motion.y;
+
                     if(isPieceSelected){
                         selectedPiece[0]->x = mousePosition.x;
                         selectedPiece[0]->y = mousePosition.y;
@@ -82,7 +98,7 @@ int main() {
                                 squareOverGrid[i] = 0;
                             }
                             if (selectedPieceSavedCord[i].x < selectedPieceSavedCord[0].x){
-                                selectedPiece[i]->x = selectedPiece[0]->x - (selectedPieceSavedCord[0].x - selectedPieceSavedCord[i].x);
+                                selectedPiece[i]->x = (selectedPiece[0]->x - (selectedPieceSavedCord[0].x - selectedPieceSavedCord[i].x));
                             } else if (selectedPieceSavedCord[i].x >= selectedPieceSavedCord[0].x){
                                 selectedPiece[i]->x = selectedPiece[0]->x + (selectedPieceSavedCord[i].x - selectedPieceSavedCord[0].x);
                             }
@@ -92,6 +108,7 @@ int main() {
                             } else if (selectedPieceSavedCord[i].y >= selectedPieceSavedCord[0].y){
                                 selectedPiece[i]->y = selectedPiece[0]->y + (selectedPieceSavedCord[i].y - selectedPieceSavedCord[0].y);
                             }
+
                         }
                     }
                     break;
@@ -103,20 +120,20 @@ int main() {
                 case SDL_MOUSEBUTTONDOWN:
                     for (int i = 0; i < 12; ++i) {
                         for (int j = 0; j < NUMBER_PART_PIECE; ++j) {
-                            if(SDL_PointInRect(&mousePosition,&SDL_Pieces[i].rects[j])){
+                            if(SDL_PointInRect(&mousePosition,&SDL_Pieces[i][j])){
                                 rankPieceSelected = i;
-                                clickedPoint.y = SDL_Pieces[i].rects[0].y;
-                                clickedPoint.x = SDL_Pieces[i].rects[0].x;
+                                clickedPoint.y = SDL_Pieces[i][0].y;
+                                clickedPoint.x = SDL_Pieces[i][0].x;
                                 isPieceSelected = 1;
-                                for (int k = 0; k < NUMBER_PART_PIECE; ++k) {
-                                    selectedPiece[k] = &SDL_Pieces[rankPieceSelected].rects[k];
-                                }
-                                setSizePiece(selectedPiece, 1);
-                                for (int k = 0; k < NUMBER_PART_PIECE; ++k) {
-                                    selectedPieceSavedCord[k].x = selectedPiece[k]->x;
-                                    selectedPieceSavedCord[k].y = selectedPiece[k]->y;
-                                }
                             }
+                        }
+                    }
+
+                    if (isPieceSelected) {
+                        for (int i = 0; i < NUMBER_PART_PIECE; ++i) {
+                            selectedPiece[i] = &SDL_Pieces[rankPieceSelected][i];
+                            selectedPieceSavedCord[i].x = selectedPiece[i]->x;
+                            selectedPieceSavedCord[i].y = selectedPiece[i]->y;
                         }
                     }
                     break;
@@ -145,8 +162,6 @@ int main() {
                         }
 
                         SDL_RenderFillRect(renderer, selectedPiece[k]);
-
-                    } else {
 
                     }
                 }
