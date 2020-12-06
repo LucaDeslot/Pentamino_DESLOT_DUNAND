@@ -36,18 +36,17 @@ void displayPieces(SDL_Window (**window),int selectedRect,struct piece (*partPie
         printf("Erreur lors de l'initialisation du renderer : %s", SDL_GetError());
     }
 
-    SDL_SetRenderDrawColor(renderer,255,0,255,255);//couleur des cases
-
     int shiftOrdinate=0;//décallage des ordonnées
     int shiftAbscissa=0;//décallage des abscisses
 
     for(int i=0;i<12;i++){//TODO  12 doit être dynamique ici
 
+        SDL_SetRenderDrawColor(renderer,(*partPiece)[i].color.r,(*partPiece)[i].color.g,(*partPiece)[i].color.b,255);//couleur des cases
+
         if (selectedRect != i){
             displayPiece(pieces,i,numberPieces,partPiece,shiftOrdinate,shiftAbscissa);
+            SDL_RenderFillRects(renderer, (*partPiece)[i].rects, NUMBER_PART_PIECE);
         }
-        SDL_SetRenderDrawColor(renderer,(*partPiece)[i].color.r,(*partPiece)[i].color.g,(*partPiece)[i].color.b,255);//couleur des cases
-        SDL_RenderFillRects(renderer, (*partPiece)[i].rects, NUMBER_PART_PIECE);
         shiftOrdinate+=0;
         shiftAbscissa+=75;
     }

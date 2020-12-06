@@ -73,6 +73,7 @@ int main() {
                         selectedPiece[0]->y = mousePosition.y;
                         if (isSquareOverGrid(selectedPiece[0], gridSquares, &renderer, 60)){// on vérifie si des carré sont sur la grille
                             squareOverGrid[0] = 1;
+
                         } else {
                             squareOverGrid[0] = 0;
                         }
@@ -139,15 +140,12 @@ int main() {
             for (int j = 0; j <NUMBER_PART_PIECE; ++j) {
                 for (int k = 0; k < NUMBER_PART_PIECE; ++k) {
                     if(isPieceSelected){ // si un carré et sur la grille on ne touche pas sa couleur.
-
                         if (1 == squareOverGrid[k]){
-                            SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); // on fait disparaitre le carré
+                            SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0); // on fait disparaitre le carré
                         } else {
-                            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);//couleur des pièces sélectionnées au drag and drop
+                            SDL_SetRenderDrawColor(renderer, SDL_Pieces[rankPieceSelected].color.r, SDL_Pieces[rankPieceSelected].color.g, SDL_Pieces[rankPieceSelected].color.b, 0);
                         }
-
                         SDL_RenderFillRect(renderer, selectedPiece[k]);
-
                     }
                 }
             }
