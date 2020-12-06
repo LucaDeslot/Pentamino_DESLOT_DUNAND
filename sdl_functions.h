@@ -32,10 +32,10 @@ void initColor(struct piece (*piece)[12]);
 
 void setSizePiece(SDL_Rect **piece, int set);
 
-void displayPieces(SDL_Window (**window),int selectedRect,struct piece (*partPiece)[12],int (**pieces)[NUMBER_PART_PIECE][NUMBER_PART_PIECE],int numberPieces,int firstDimensionTab,int secondDimensionTab);//affiche toutes les pièces
+void displayPieces(SDL_Window (**window), int selectedRect, struct piece (*partPiece)[12], int (**pieces)[NUMBER_PART_PIECE][NUMBER_PART_PIECE], int numberPieces, int firstDimensionTab, int secondDimensionTab);//affiche toutes les pièces
 void displayPiece(int (**pieces)[NUMBER_PART_PIECE][NUMBER_PART_PIECE], int pieceAfficher,int numberPiece, struct piece (*partPiece)[12],int shiftOrdinate,int shiftAbscissa);//affiche une pièce
 
 SDL_Rect * displayGrid(int x, int y, SDL_Window **window);
 
 int isSquareOverGrid(SDL_Rect *square, SDL_Rect *grid, SDL_Renderer **renderer, int gridSize);
-
+void setDisplayPieces(struct piece(*partPiece)[12]);

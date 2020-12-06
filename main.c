@@ -3,6 +3,8 @@
 #include <stdbool.h>
 #include <string.h>
 #include <SDL2/SDL.h>
+/*#include <SDL2/SDL_ttf.h>
+#include "SDL2_ttf/SDL_ttf.h"*/
 
 #include "main.h"
 #include "sdl_functions.h"
@@ -33,6 +35,11 @@ int main() {
         SDL_Quit();
         return EXIT_FAILURE;
     }
+
+    /*if(TTF_Init()==-1){
+        printf("Erreur lors de l'initialisation de la TTF : %s",TTF_GetError());
+    }
+    TTF_Font *font=TTF_OpenFont("./arial.ttf",28);*/
 
 
     // Mettre en place un contexte de rendu de l’écran
@@ -151,8 +158,6 @@ int main() {
                     }
                 }
             }
-
-
         }
 
         gridSquares = displayGrid(10, 6, &window);
@@ -163,6 +168,8 @@ int main() {
     free(pieces);
     free(selectedPiece);
     SDL_DestroyWindow(window);
+    /*TTF_CloseFont(font);//on désaloue TTF
+    TTF_Quit();*/
     return 0;
 }
 
