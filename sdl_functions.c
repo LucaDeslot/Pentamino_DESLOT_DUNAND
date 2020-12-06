@@ -6,10 +6,27 @@
 
 #include "sdl_functions.h"
 
-void displayPieces(SDL_Window (**window),int selectedRect,SDL_Rect (*partPiece)[12][NUMBER_PART_PIECE],int (**pieces)[NUMBER_PART_PIECE][NUMBER_PART_PIECE],int numberPieces,int firstDimensionTab,int secondDimensionTab)//affiche toutes les pièces
+void initColor(struct piece (*piece)[12]){
+    (*piece)[0].color.r = 30; (*piece)[0].color.g = 144; (*piece)[0].color.b = 255; //dodgerblue
+    (*piece)[1].color.r = 0; (*piece)[1].color.g = 0; (*piece)[1].color.b = 139; //darkblue
+    (*piece)[2].color.r = 255; (*piece)[2].color.g = 0; (*piece)[2].color.b = 0; //red
+    (*piece)[3].color.r = 219; (*piece)[3].color.g = 112; (*piece)[3].color.b = 147; //palevioletred
+    (*piece)[4].color.r = 0; (*piece)[4].color.g = 0; (*piece)[4].color.b = 0; // black
+    (*piece)[5].color.r = 255; (*piece)[5].color.g = 69; (*piece)[5].color.b = 0; //orangered
+    (*piece)[6].color.r = 255; (*piece)[6].color.g = 0; (*piece)[6].color.b = 255; //fuchsia
+    (*piece)[7].color.r = 75; (*piece)[7].color.g = 0; (*piece)[7].color.b = 130; //indigo
+    (*piece)[8].color.r = 255; (*piece)[8].color.g = 192; (*piece)[8].color.b = 203; //pink
+    (*piece)[9].color.r = 165; (*piece)[9].color.g = 42; (*piece)[9].color.b = 42; //brown
+    (*piece)[10].color.r = 222; (*piece)[10].color.g = 184; (*piece)[10].color.b = 135; //burlywood
+    (*piece)[11].color.r = 188; (*piece)[11].color.g = 143; (*piece)[11].color.b = 143; //rosybrown
+}
+
+void displayPieces(SDL_Window (**window),int selectedRect,struct piece (*partPiece)[12],int (**pieces)[NUMBER_PART_PIECE][NUMBER_PART_PIECE],int numberPieces,int firstDimensionTab,int secondDimensionTab)//affiche toutes les pièces
 {
+    initColor(partPiece);
+
     //Déclaration
-    SDL_Renderer* renderer;
+    SDL_Renderer* renderer = SDL_GetRenderer(*window);
     //TODO: malloc à faire pour le nombre de pièce
 
     //Obtention du renderer à partir de la window
@@ -28,19 +45,20 @@ void displayPieces(SDL_Window (**window),int selectedRect,SDL_Rect (*partPiece)[
 
         if (selectedRect != i){
             displayPiece(pieces,i,numberPieces,partPiece,shiftOrdinate,shiftAbscissa);
-            SDL_RenderFillRects(renderer, (*partPiece)[i], NUMBER_PART_PIECE);
         }
+        SDL_SetRenderDrawColor(renderer,(*partPiece)[i].color.r,(*partPiece)[i].color.g,(*partPiece)[i].color.b,255);//couleur des cases
+        SDL_RenderFillRects(renderer, (*partPiece)[i].rects, NUMBER_PART_PIECE);
         shiftOrdinate+=0;
         shiftAbscissa+=75;
     }
 
-    if(SDL_RenderFillRects(renderer, (*partPiece)[0], NUMBER_PART_PIECE)<0){//on colore les parties de la pièce
+    if(SDL_RenderFillRects(renderer, (*partPiece)[0].rects, NUMBER_PART_PIECE)<0){//on colore les parties de la pièce
         printf("Erreur lors de la coloration des parties d'une piece : %s", SDL_GetError());
         exit(EXIT_FAILURE);
     }
 }
 
-void displayPiece(int (**pieces)[NUMBER_PART_PIECE][NUMBER_PART_PIECE],int pieceAfficher,int numberPiece,SDL_Rect (*partPiece)[12][NUMBER_PART_PIECE],int shiftOrdinate,int shiftAbscissa)//affiche une pièce
+void displayPiece(int (**pieces)[NUMBER_PART_PIECE][NUMBER_PART_PIECE],int pieceAfficher,int numberPiece,struct piece(*partPiece)[12],int shiftOrdinate,int shiftAbscissa)//affiche une pièce
 {
     int countTemporary=0;
     int countReturnLine=0;//peut être pas indispensable, à voir
@@ -55,28 +73,28 @@ void displayPiece(int (**pieces)[NUMBER_PART_PIECE][NUMBER_PART_PIECE],int piece
                 if((*pieces)[pieceAfficher][i][j]==1) {//si on doit afficher un carré de couleur
                     if(l==0){//toute première itération, il faut donc set partPiece[0] puisqu'on va ensuite se servir de partPiece[l-1]
                         if(countSpaceInPiece!=0){//si on a une pièce qui commence par un vide en haut à gauche
-                            (*partPiece)[pieceAfficher][0].x=j*(SPACING_PX+PIECE_SIZE_PX)+shiftAbscissa;
-                            (*partPiece)[pieceAfficher][0].y=0+shiftOrdinate;
+                            (*partPiece)[pieceAfficher].rects[0].x=j*(SPACING_PX+PIECE_SIZE_PX)+shiftAbscissa;
+                            (*partPiece)[pieceAfficher].rects[0].y=0+shiftOrdinate;
                         }else{//on a une pièce qui commence par un plein en haut à gauche
-                            (*partPiece)[pieceAfficher][0].x=0+shiftAbscissa;
-                            (*partPiece)[pieceAfficher][0].y=0+shiftOrdinate;
+                            (*partPiece)[pieceAfficher].rects[0].x=0+shiftAbscissa;
+                            (*partPiece)[pieceAfficher].rects[0].y=0+shiftOrdinate;
                         }
-                        (*partPiece)[pieceAfficher][0].w=(*partPiece)[pieceAfficher][0].h=PIECE_SIZE_PX;
+                        (*partPiece)[pieceAfficher].rects[0].w=(*partPiece)[pieceAfficher].rects[0].h=PIECE_SIZE_PX;
                     } else{
                         if(j==0 || countSpaceInPiece!=0){//on est sur une nouvelle ligne
                             //nouvelle ligne -> j==0 ou alors si countSpaceInPice!=0 ça veut dire qu'on a un espace en début de ligne
                             if(j==0){//si c'est vraiment le début d'une ligne
-                                (*partPiece)[pieceAfficher][l].x = 0+shiftAbscissa;
-                                (*partPiece)[pieceAfficher][l].y = i*(SPACING_PX+PIECE_SIZE_PX)+shiftOrdinate;
+                                (*partPiece)[pieceAfficher].rects[l].x = 0+shiftAbscissa;
+                                (*partPiece)[pieceAfficher].rects[l].y = i*(SPACING_PX+PIECE_SIZE_PX)+shiftOrdinate;
                             } else{//si la ligne a déjà commencé (j>0)
-                                (*partPiece)[pieceAfficher][l].x = j*(SPACING_PX+PIECE_SIZE_PX)+shiftAbscissa;
-                                (*partPiece)[pieceAfficher][l].y = i*(SPACING_PX+PIECE_SIZE_PX)+shiftOrdinate;
+                                (*partPiece)[pieceAfficher].rects[l].x = j*(SPACING_PX+PIECE_SIZE_PX)+shiftAbscissa;
+                                (*partPiece)[pieceAfficher].rects[l].y = i*(SPACING_PX+PIECE_SIZE_PX)+shiftOrdinate;
                             }
                         } else{//on est pas sur un nouvelle ligne, on continue
-                            (*partPiece)[pieceAfficher][l].x = j*(SPACING_PX+PIECE_SIZE_PX)+shiftAbscissa;
-                            (*partPiece)[pieceAfficher][l].y = i*(SPACING_PX+PIECE_SIZE_PX)+shiftOrdinate;
+                            (*partPiece)[pieceAfficher].rects[l].x = j*(SPACING_PX+PIECE_SIZE_PX)+shiftAbscissa;
+                            (*partPiece)[pieceAfficher].rects[l].y = i*(SPACING_PX+PIECE_SIZE_PX)+shiftOrdinate;
                         }
-                        (*partPiece)[pieceAfficher][l].w = (*partPiece)[pieceAfficher][l].h = PIECE_SIZE_PX; //taille d'une case de la piece
+                        (*partPiece)[pieceAfficher].rects[l].w = (*partPiece)[pieceAfficher].rects[l].h = PIECE_SIZE_PX; //taille d'une case de la piece
                     }
                     l++;
                 } else{//=0, deux possibilités encore ...
@@ -102,6 +120,18 @@ void displayPiece(int (**pieces)[NUMBER_PART_PIECE][NUMBER_PART_PIECE],int piece
         }
         countSpaceInPiece=0;//reboot du compteur
         isEndOfLine=false;//il faut la remettre à false puisqu'on passe à la ligne suivante
+    }
+}
+
+void setSizePiece(SDL_Rect **piece, int set) {
+    int ratio = PIECE_SIZE_GRID_PX/PIECE_SIZE_PX;
+    if (set){
+        for (int i = 0; i < NUMBER_PART_PIECE; ++i) {
+            piece[i]->x *= ratio;
+            piece[i]->y *= ratio;
+            piece[i]->h *= ratio;
+            piece[i]->w *= ratio;
+        }
     }
 }
 

@@ -17,8 +17,23 @@
 #define HEIGHT_SCREEN 720
 #define NUMBER_PART_PIECE 5//nombre de carré d'affichage d'une pièce, ici 5 par 5
 
-void displayPieces(SDL_Window (**window),int selectedRect,SDL_Rect (*partPiece)[12][NUMBER_PART_PIECE],int (**pieces)[NUMBER_PART_PIECE][NUMBER_PART_PIECE],int numberPieces,int firstDimensionTab,int secondDimensionTab);//affiche toutes les pièces
-void displayPiece(int (**pieces)[NUMBER_PART_PIECE][NUMBER_PART_PIECE], int pieceAfficher,int numberPiece, SDL_Rect (*partPiece)[12][NUMBER_PART_PIECE],int shiftOrdinate,int shiftAbscissa);//affiche une pièce
+typedef struct color {
+    int r;
+    int g;
+    int b;
+} piece_color;
+
+struct piece {
+    SDL_Rect rects[5];
+    piece_color color;
+};
+
+void initColor(struct piece (*piece)[12]);
+
+void setSizePiece(SDL_Rect **piece, int set);
+
+void displayPieces(SDL_Window (**window),int selectedRect,struct piece (*partPiece)[12],int (**pieces)[NUMBER_PART_PIECE][NUMBER_PART_PIECE],int numberPieces,int firstDimensionTab,int secondDimensionTab);//affiche toutes les pièces
+void displayPiece(int (**pieces)[NUMBER_PART_PIECE][NUMBER_PART_PIECE], int pieceAfficher,int numberPiece, struct piece (*partPiece)[12],int shiftOrdinate,int shiftAbscissa);//affiche une pièce
 
 SDL_Rect * displayGrid(int x, int y, SDL_Window **window);
 
