@@ -1,8 +1,9 @@
 //
 // Created by nathand on 31/10/2020.
 //
-#include "SDL2/SDL.h"
 #include <stdbool.h>
+#include "SDL2/SDL.h"
+#include <SDL2/SDL_ttf.h>
 
 #include "sdl_functions.h"
 
@@ -48,7 +49,7 @@ void displayPieces(SDL_Window (**window),struct piece (*partPiece)[12],int (**pi
             SDL_RenderFillRects(renderer, (*partPiece)[i].rects, NUMBER_PART_PIECE);
         }
         shiftOrdinate+=0;
-        shiftAbscissa+=75;
+        shiftAbscissa+=100;
     }
 
     if (rankSelectedPiece != -1) {
@@ -122,6 +123,8 @@ void displayPiece(int (**pieces)[NUMBER_PART_PIECE][NUMBER_PART_PIECE],int piece
         countSpaceInPiece=0;//reboot du compteur
         isEndOfLine=false;//il faut la remettre à false puisqu'on passe à la ligne suivante
     }
+
+    setDisplayPieces(partPiece);//réglage de l'affichage des pièces sur le côté gauche de l'écran
 }
 
 void setSizePiece(SDL_Rect **piece, int set) {
@@ -280,6 +283,30 @@ placePiece(struct gridSquare *grid, int gridSize, int squareIndex, SDL_Rect **se
         }
     }
 
+}
+
+void setDisplayPieces(struct piece(*partPiece)[12]){//réglage de l'affichage des pièces sur la partie prévue à cet effet, sinon elles débordent de l'affichage
+    int shiftOrdinate=100;
+    int abscissa=0;
+    for(int i=0;i<12;i++){//toutes les pieces de la première à la 12ème
+        if(i%3==0 && i!=0){
+            for(int k=i;k<12;k++){
+                for(int j=0;j<5;j++){//toutes les partie d'une pièce
+                    if(j==0){
+                        if(k%3==0){
+                            abscissa=(*partPiece)[k].rects[j].x;
+                        }else if(k%3==1){
+                            abscissa=(*partPiece)[k].rects[j].x-((k%3)*100);
+                        }else{
+                            abscissa=(*partPiece)[k].rects[j].x-((k%3)*100);
+                        }
+                    }
+                    (*partPiece)[k].rects[j].x-=abscissa;
+                    (*partPiece)[k].rects[j].y+=shiftOrdinate;
+                }
+            }
+        }
+    }
 }
 
 int getGridSquareWithPiece(struct gridSquare *grid, int gridSize ,SDL_Rect piece){

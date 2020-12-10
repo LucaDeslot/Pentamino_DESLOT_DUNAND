@@ -41,6 +41,7 @@ void displayPiece(int (**pieces)[NUMBER_PART_PIECE][NUMBER_PART_PIECE], int piec
 
 void displayGrid(int x, int y, SDL_Window **window, struct gridSquare **grid, struct piece *pieces);
 
+void setDisplayPieces(struct piece(*partPiece)[12]);
 void setGrid(struct gridSquare *grid, SDL_Rect **selectedPiece, int gridSize, struct color pieceColor);
 
 void
