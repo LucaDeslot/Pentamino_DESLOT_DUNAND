@@ -43,7 +43,7 @@ void displayPieces(SDL_Window (**window),struct piece (*partPiece)[12],int (**pi
 
         SDL_SetRenderDrawColor(renderer,(*partPiece)[i].color.r,(*partPiece)[i].color.g,(*partPiece)[i].color.b,255);//couleur des cases
 
-        if (rankSelectedPiece != i){
+        if (rankSelectedPiece != i && (*partPiece)[i].onGrid == 0){
             displayPiece(pieces,i,numberPieces,partPiece,shiftOrdinate,shiftAbscissa);
             SDL_RenderFillRects(renderer, (*partPiece)[i].rects, NUMBER_PART_PIECE);
         }
@@ -154,6 +154,7 @@ void displayGrid(int x, int y, SDL_Window **window, struct gridSquare **grid, st
             (*grid)[i].color.r = 182;
             (*grid)[i].color.g = 182;
             (*grid)[i].color.b = 182; //couleur de base de la grille
+            (*grid)[i].pieceOver = -1;
         }
     }
 
@@ -176,12 +177,21 @@ void displayGrid(int x, int y, SDL_Window **window, struct gridSquare **grid, st
         (*grid)[i].rect.w = (*grid)[0].rect.w;
         (*grid)[i].rect.h = (*grid)[0].rect.h;
 
+       /* for (int j = 0; j < 12; ++j) {
+            for (int k = 0; k < NUMBER_PART_PIECE; ++k) {
+                if (pieces[j].onGrid && (*grid)[i].rect.x == pieces[j].rects[k].x && (*grid)[i].rect.y == pieces[j].rects[k].y){
+
+                }
+            }
+        } */
+        
         SDL_SetRenderDrawColor(renderer,(*grid)[i].color.r,(*grid)[i].color.g,(*grid)[i].color.b,255); //Couleur des cases du plateau
         SDL_RenderFillRect(renderer,&(*grid)[i].rect);
     }
 }
 
-void setGrid(struct gridSquare *grid, struct piece *selectedPiece, int gridSize, struct color pieceColor) { // retourne le rang du carré de la grille sur lequel est la pièce
+void setGrid(struct gridSquare *grid, struct piece *selectedPiece, int gridSize, struct color pieceColor,
+             int rankSelectedPiece) {
 
     int gX, gY, gH, gW;
     int cursorOut = 1;
@@ -192,7 +202,7 @@ void setGrid(struct gridSquare *grid, struct piece *selectedPiece, int gridSize,
         gW = grid[i].rect.w;
     if ((*selectedPiece).rects[0].x >= gX && (*selectedPiece).rects[0].x <= gX + gW) {
         if ((*selectedPiece).rects[0].y > gY && (*selectedPiece).rects[0].y < gY + gH) {
-            placePiece(grid, gridSize, i, selectedPiece, pieceColor);
+            placePiece(grid, gridSize, rankSelectedPiece, selectedPiece, pieceColor);
             cursorOut = 0;
         }
     }
@@ -204,7 +214,7 @@ void setGrid(struct gridSquare *grid, struct piece *selectedPiece, int gridSize,
 }
 
 void
-placePiece(struct gridSquare *grid, int gridSize, int squareIndex, struct piece *selectedPiece, struct color pieceColor) {
+placePiece(struct gridSquare *grid, int gridSize, int rankSelectedPiece, struct piece *selectedPiece, struct color pieceColor) {
 
     int maxY = 0, maxX = 0, minY = HEIGHT_SCREEN, minX = WIDTH_SCREEN;
     int maxXGrid = grid[gridSize-1].rect.x, maxYGrid = grid[gridSize-1].rect.y, minXGrid = grid[0].rect.x, minYGrid = grid[0].rect.y;
@@ -247,6 +257,7 @@ placePiece(struct gridSquare *grid, int gridSize, int squareIndex, struct piece 
             for (int j = 0; j < NUMBER_PART_PIECE; ++j) {
                 if ((*selectedPiece).rects[j].x == grid[i].rect.x && (*selectedPiece).rects[j].y == grid[i].rect.y ){
                     grid[i].color = pieceColor;
+                    grid[i].pieceOver = 1;
                     break;
                 } else {
                     grid[i].color.r = 182;
@@ -257,6 +268,11 @@ placePiece(struct gridSquare *grid, int gridSize, int squareIndex, struct piece 
         }
 
     } else {
+        for (int i = 0; i < gridSize; ++i) {
+            if (grid[i].pieceOver == rankSelectedPiece){
+                grid[i].pieceOver = -1; 
+            }
+        }
         razGrid(grid,gridSize);
     }
 
@@ -264,9 +280,11 @@ placePiece(struct gridSquare *grid, int gridSize, int squareIndex, struct piece 
 
 void razGrid(struct gridSquare *grid, int gridSize){
     for (int i = 0; i < gridSize; ++i) {
-        grid[i].color.r = 182;
-        grid[i].color.g = 182;
-        grid[i].color.b = 182;
+        if(grid[i].pieceOver == 0){
+            grid[i].color.r = 182;
+            grid[i].color.g = 182;
+            grid[i].color.b = 182;
+        }
     }
 }
 
@@ -306,11 +324,11 @@ int getGridSquareWithPiece(struct gridSquare *grid, int gridSize ,SDL_Rect piece
     return res;
 }
 
-void putPieceOnGrid(struct gridSquare *grid, int gridSize, struct piece (*pieces)[12], struct color color, int rankPieceSelected) {
+void putPieceOnGrid(struct gridSquare *grid, int gridSize, struct piece (*pieces)[12], struct color color, int *rankPieceSelected) {
     int flag = 0;
     for (int i = 0; i < gridSize; ++i) {
         for (int j = 0; j < NUMBER_PART_PIECE; ++j) {
-            if ((*pieces)[rankPieceSelected].rects[j].x == grid[i].rect.x && (*pieces)[rankPieceSelected].rects[j].y == grid[i].rect.y){
+            if ((*pieces)[*rankPieceSelected].rects[j].x == grid[i].rect.x && (*pieces)[*rankPieceSelected].rects[j].y == grid[i].rect.y){
                 grid[i].color = color;
                 flag = 1;
             }
@@ -318,7 +336,8 @@ void putPieceOnGrid(struct gridSquare *grid, int gridSize, struct piece (*pieces
     }
 
     if (flag){
-        (*pieces)[rankPieceSelected].onGrid = 1;
+        (*pieces)[*rankPieceSelected].onGrid = 1;
+        *rankPieceSelected = -1;
     }
 
 }

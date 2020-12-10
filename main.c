@@ -16,7 +16,7 @@ int main() {
     struct piece SDL_Pieces[12];
 
     for (int i = 0; i < 12; ++i) {
-        SDL_Pieces->onGrid = 0;
+        SDL_Pieces[i].onGrid = 0;
     }
     //TODO: remplacer le 12 par du dynamisme
 
@@ -99,34 +99,31 @@ int main() {
 
                             }
 
-                        setGrid(gridSquares, &(SDL_Pieces[rankPieceSelected]), 60, SDL_Pieces[rankPieceSelected].color);
-
+                        setGrid(gridSquares, &(SDL_Pieces[rankPieceSelected]), 60, SDL_Pieces[rankPieceSelected].color,
+                                rankPieceSelected);
                     }
-
-                    break;
-
-                case SDL_MOUSEBUTTONUP:
 
                     break;
 
                 case SDL_MOUSEBUTTONDOWN:
-                    for (int i = 0; i < 12; ++i) {
-                        for (int j = 0; j < NUMBER_PART_PIECE; ++j) {
-                            if(SDL_PointInRect(&mousePosition,&SDL_Pieces[i].rects[j])){
-                                rankPieceSelected = i;
-                                clickedPoint.y = SDL_Pieces[i].rects[0].y;
-                                clickedPoint.x = SDL_Pieces[i].rects[0].x;
-                                setSizePiece(&(SDL_Pieces[rankPieceSelected]), isPieceBig++);
-                                for (int k = 0; k < NUMBER_PART_PIECE; ++k) {
-                                    selectedPieceSavedCord[k].x = SDL_Pieces[rankPieceSelected].rects[k].x;
-                                    selectedPieceSavedCord[k].y = SDL_Pieces[rankPieceSelected].rects[k].y;
+                    if (rankPieceSelected == -1){
+                        for (int i = 0; i < 12; ++i) {
+                            for (int j = 0; j < NUMBER_PART_PIECE; ++j) {
+                                if(SDL_PointInRect(&mousePosition,&SDL_Pieces[i].rects[j])){
+                                    rankPieceSelected = i;
+                                    clickedPoint.y = SDL_Pieces[i].rects[0].y;
+                                    clickedPoint.x = SDL_Pieces[i].rects[0].x;
+                                    setSizePiece(&(SDL_Pieces[rankPieceSelected]), 0);
+                                    for (int k = 0; k < NUMBER_PART_PIECE; ++k) {
+                                        selectedPieceSavedCord[k].x = SDL_Pieces[rankPieceSelected].rects[k].x;
+                                        selectedPieceSavedCord[k].y = SDL_Pieces[rankPieceSelected].rects[k].y;
+                                    }
                                 }
                             }
                         }
+                    } else {
+                        putPieceOnGrid(gridSquares,60,&SDL_Pieces,SDL_Pieces[rankPieceSelected].color,&rankPieceSelected);
                     }
-
-                    if (rankPieceSelected != -1)
-                        putPieceOnGrid(gridSquares,60,&SDL_Pieces,SDL_Pieces[rankPieceSelected].color,rankPieceSelected);
 
                     break;
             }
