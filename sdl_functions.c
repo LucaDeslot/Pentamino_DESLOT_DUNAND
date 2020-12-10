@@ -21,7 +21,7 @@ void initColor(struct piece (*piece)[12]){
     (*piece)[11].color.r = 188; (*piece)[11].color.g = 143; (*piece)[11].color.b = 143; //rosybrown
 }
 
-void displayPieces(SDL_Window (**window),int selectedRect,struct piece (*partPiece)[12],int (**pieces)[NUMBER_PART_PIECE][NUMBER_PART_PIECE],int numberPieces,int firstDimensionTab,int secondDimensionTab)//affiche toutes les pièces
+void displayPieces(SDL_Window (**window),struct piece (*partPiece)[12],int (**pieces)[NUMBER_PART_PIECE][NUMBER_PART_PIECE],int numberPieces, struct SDL_Rect **selectedPiece, int rankSelectedPiece)//affiche toutes les pièces
 {
     initColor(partPiece);
 
@@ -43,7 +43,7 @@ void displayPieces(SDL_Window (**window),int selectedRect,struct piece (*partPie
 
         SDL_SetRenderDrawColor(renderer,(*partPiece)[i].color.r,(*partPiece)[i].color.g,(*partPiece)[i].color.b,255);//couleur des cases
 
-        if (selectedRect != i){
+        if (rankSelectedPiece != i){
             displayPiece(pieces,i,numberPieces,partPiece,shiftOrdinate,shiftAbscissa);
             SDL_RenderFillRects(renderer, (*partPiece)[i].rects, NUMBER_PART_PIECE);
         }
@@ -51,9 +51,11 @@ void displayPieces(SDL_Window (**window),int selectedRect,struct piece (*partPie
         shiftAbscissa+=75;
     }
 
-    if(SDL_RenderFillRects(renderer, (*partPiece)[0].rects, NUMBER_PART_PIECE)<0){//on colore les parties de la pièce
-        printf("Erreur lors de la coloration des parties d'une piece : %s", SDL_GetError());
-        exit(EXIT_FAILURE);
+    if (rankSelectedPiece != -1) {
+        for (int k = 0; k < NUMBER_PART_PIECE; ++k) {
+            SDL_SetRenderDrawColor(renderer, (*partPiece)[rankSelectedPiece].color.r, (*partPiece)[rankSelectedPiece].color.g, (*partPiece)[rankSelectedPiece].color.b, 0);
+            SDL_RenderFillRect(renderer, selectedPiece[k]);
+        }
     }
 }
 
@@ -134,63 +136,160 @@ void setSizePiece(SDL_Rect **piece, int set) {
     }
 }
 
-SDL_Rect * displayGrid(int x, int y, SDL_Window **window) {
+void displayGrid(int x, int y, SDL_Window **window, struct gridSquare **grid, struct piece *pieces) {
 
     //Déclaration
-    SDL_Rect *rect = malloc(x * y * sizeof(SDL_Rect));
     SDL_Renderer* renderer = SDL_GetRenderer(*window);
     int width = x;
     int gridStartX;
     SDL_GetWindowSize(*window, &gridStartX, NULL);
-    gridStartX /= 3;
-    SDL_SetRenderDrawColor(renderer,182,182,182,255); //Couleur des cases du plateau
-
-    rect[0].x = gridStartX;
-    rect[0].y = HEIGHT_SCREEN/12;
-    rect[0].w = PIECE_SIZE_GRID_PX;
-    rect[0].h = rect[0].w;
-
     int gridSize = x * y;
+
+    gridStartX /= 3;
+    if (*grid == NULL){
+        *grid = malloc(gridSize * sizeof(struct gridSquare));
+        for (int i = 0; i <x*y; ++i) {
+            (*grid)[i].color.r = 182;
+            (*grid)[i].color.g = 182;
+            (*grid)[i].color.b = 182; //couleur de base de la grille
+            //(*grid)[i].pieceOver = -1; // aucune pièce au début sur le plateau
+        }
+    } /*else {
+        for (int i = 0; i <gridSize; ++i) {
+            if ((*grid)[i].pieceOver != -1){
+                (*grid)[i].color = pieces[(*grid)[i].pieceOver].color;  // on donne la couleur de la pièce à cette partie de la grille
+            } else {
+                (*grid)[i].color.r = 182;
+                (*grid)[i].color.g = 182;
+                (*grid)[i].color.b = 182; //couleur de base de la grille si aucune pièce est présente dessus
+            }
+        }
+    } */
+
+    (*grid)[0].rect.x = gridStartX;
+    (*grid)[0].rect.y = HEIGHT_SCREEN / 12;
+    (*grid)[0].rect.w = PIECE_SIZE_GRID_PX;
+    (*grid)[0].rect.h = (*grid)[0].rect.w;
+    SDL_SetRenderDrawColor(renderer,(*grid)[0].color.r,(*grid)[0].color.g,(*grid)[0].color.b,255); //Couleur des cases du plateau
+    SDL_RenderFillRect(renderer,&(*grid)[0].rect);
+
     for (int i = 1; i < gridSize; ++i) {
         if(i == x){ //retour à la ligne
             x += width;
-            rect[i].x = gridStartX;
-            rect[i].y = rect[i-1].h + rect[i-1].y + SPACING_PX_GRID;
+            (*grid)[i].rect.x = gridStartX;
+            (*grid)[i].rect.y = (*grid)[i - 1].rect.h + (*grid)[i - 1].rect.y + SPACING_PX_GRID;
         } else {
-            rect[i].x = rect[i-1].x + rect[i-1].w + SPACING_PX_GRID;
-            rect[i].y = rect[i-1].y;
+            (*grid)[i].rect.x = (*grid)[i - 1].rect.x + (*grid)[i - 1].rect.w + SPACING_PX_GRID;
+            (*grid)[i].rect.y = (*grid)[i - 1].rect.y;
         }
-        rect[i].w = rect[0].w;
-        rect[i].h = rect[0].h;
+        (*grid)[i].rect.w = (*grid)[0].rect.w;
+        (*grid)[i].rect.h = (*grid)[0].rect.h;
+
+        SDL_SetRenderDrawColor(renderer,(*grid)[i].color.r,(*grid)[i].color.g,(*grid)[i].color.b,255); //Couleur des cases du plateau
+        SDL_RenderFillRect(renderer,&(*grid)[i].rect);
+    }
+}
+
+void setGrid(struct gridSquare *grid, SDL_Rect **selectedPiece, int gridSize, struct color pieceColor) { // retourne le rang du carré de la grille sur lequel est la pièce
+
+    int gX, gY, gH, gW;
+    for (int i = 0; i < gridSize; ++i) {
+        gX = grid[i].rect.x;
+        gY = grid[i].rect.y;
+        gH = grid[i].rect.h;
+        gW = grid[i].rect.w;
+    if (selectedPiece[0]->x >= gX && selectedPiece[0]->x <= gX + gW) {
+        if (selectedPiece[0]->y > gY && selectedPiece[0]->y < gY + gH) {
+            placePiece(grid, gridSize, i, selectedPiece, pieceColor);
+        }
+    }
+}
+
+
+    /*int rankGrid = 0;
+    int pX, pY, gX, gY, gH, gW; // les coordonées p correspondent au centre du carré de la pièce
+    pX = square->x + (square->w/2);
+    pY = square->y + (square->h/2);
+        gX = (*grid).rect.x;
+        gY = (*grid).rect.y;
+        gH = (*grid).rect.h;
+        gW = (*grid).rect.w;
+        if(pX >= gX && pX <= gX + gW){
+            if(pY > gY && pY < gY + gH) {
+                rankGrid = 1;
+            }
+        }*/
+        /*else if (pY >= gY && pY <= gY + gH){
+            if ((pX + pW > gX && pX + pW < gX + gW) || (pX < gX + gW && pX > gX)){
+                squareOver = 1;
+                grid[j].color = pieceColor;
+            } else {
+                grid[j].color.r = 182;
+                grid[j].color.g = 182;
+                grid[j].color.b = 182;
+            }
+        }*/
+}
+
+void
+placePiece(struct gridSquare *grid, int gridSize, int squareIndex, SDL_Rect **selectedPiece, struct color pieceColor) {
+
+    int maxY = 0, maxX = 0, minY = HEIGHT_SCREEN, minX = WIDTH_SCREEN;
+    int maxXGrid = grid[gridSize-1].rect.x, maxYGrid = grid[gridSize-1].rect.y, minXGrid = grid[0].rect.x, minYGrid = grid[0].rect.y;
+    int deltaX = 0, deltaY = 0;
+    for (int i = 0; i < NUMBER_PART_PIECE; ++i) {
+        if (selectedPiece[i]->x > maxX)
+            maxX = selectedPiece[i]->x;
+
+        if (selectedPiece[i]->y > maxY)
+            maxY = selectedPiece[i]->y;
+
+        if (selectedPiece[i]->x < minX)
+            minX = selectedPiece[i]->x;
+
+        if (selectedPiece[i]->y < minY)
+            minY = selectedPiece[i]->y;
     }
 
-    SDL_RenderFillRects(renderer, rect, gridSize);
+    if(minX >= minXGrid && maxX <= maxXGrid && minY >= minYGrid && maxY <= maxYGrid){
+        int rankGridSquare = getGridSquareWithPiece(grid,gridSize,(*selectedPiece)[0]);
+        deltaX = selectedPiece[0]->x - grid[rankGridSquare].rect.x;
+        deltaY = selectedPiece[0]->y - grid[rankGridSquare].rect.y;
 
-    return rect;
+        for (int i = 0; i < NUMBER_PART_PIECE; ++i) {
+            selectedPiece[i]->x = selectedPiece[i]->x - deltaX;
+            selectedPiece[i]->y = selectedPiece[i]->y - deltaY;
+        }
+    }
+
+    int isPieceOver = 0;
+
+    for (int i = 0; i < gridSize; ++i) {
+        for (int j = 0; j < NUMBER_PART_PIECE; ++j) {
+            if (selectedPiece[j]->x == grid[i].rect.x && selectedPiece[j]->y == grid[i].rect.y ){
+                grid[i].color = pieceColor;
+                isPieceOver = 1;
+            }
+        }
+        if (!isPieceOver){
+            grid[i].color.r = 182;
+            grid[i].color.g = 182;
+            grid[i].color.b = 182;
+        } else {
+            isPieceOver = 0;
+        }
+    }
 
 }
 
-int isSquareOverGrid(SDL_Rect *square, SDL_Rect *grid, SDL_Renderer **renderer, int gridSize) { //retourne le rang du carré de la pièce sur le plateau
-    int squareOver = 0;
-    int pX, pY, pH, pW, gX, gY, gH, gW;
-    pX = square->x;
-    pY = square->y;
-    pH = square->h;
-    pW = square->w;
-    for (int j = 0; j < gridSize; ++j) {
-        gX = grid[j].x;
-        gY = grid[j].y;
-        gH = grid[j].h;
-        gW = grid[j].w;
-        if(pX >= gX && pX <= gX + gW){
-            if((pY + pH > gY && pY + pH < gY + gH) || (pY > gY && pY < gY + gH)){
-                squareOver = 1;
-            }
-        } else if (pY >= gY && pY <= gY + gH){
-            if ((pX + pW > gX && pX + pW < gX + gW) || (pX < gX + gW && pX > gX)){
-                squareOver = 1;
+int getGridSquareWithPiece(struct gridSquare *grid, int gridSize ,SDL_Rect piece){
+    int res = -1;
+    for (int i = 0; i < gridSize; ++i) {
+        if (piece.x >= grid[i].rect.x && piece.x <= grid[i].rect.x + grid[i].rect.w){
+            if (piece.y >= grid[i].rect.y && piece.y <= grid[i].rect.y + grid[i].rect.h){
+                res = i;
             }
         }
     }
-    return squareOver;
+    return res;
 }
