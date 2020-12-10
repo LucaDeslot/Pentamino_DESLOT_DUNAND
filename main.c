@@ -54,7 +54,7 @@ int main() {
     SDL_Point mousePosition;
     SDL_Point clickedPoint;
     int rankPieceSelected = -1;
-    SDL_Rect* gridSquares;
+    struct gridSquare *gridSquares = NULL;
     int squareOverGrid[NUMBER_PART_PIECE] = {0};
     while(!exit){//boucle principale du jeu
         //TODO: il faut que numberPieces soit dynamique, utiliser la fonction findPiecesNumber() ?
@@ -78,32 +78,31 @@ int main() {
                     if(isPieceSelected){
                         selectedPiece[0]->x = mousePosition.x;
                         selectedPiece[0]->y = mousePosition.y;
-                        if (isSquareOverGrid(selectedPiece[0], gridSquares, &renderer, 60)){// on vérifie si des carré sont sur la grille
-                            squareOverGrid[0] = 1;
 
-                        } else {
-                            squareOverGrid[0] = 0;
-                        }
-                        for (int i = 1; i < NUMBER_PART_PIECE; ++i) {
-                            if (isSquareOverGrid(selectedPiece[i], gridSquares, &renderer, 60)){// on vérifie si des carré sont sur la grille
-                                squareOverGrid[i] = 1;
-                            } else {
-                                squareOverGrid[i] = 0;
-                            }
-                            if (selectedPieceSavedCord[i].x < selectedPieceSavedCord[0].x){
-                                selectedPiece[i]->x = selectedPiece[0]->x - (selectedPieceSavedCord[0].x - selectedPieceSavedCord[i].x);
-                            } else if (selectedPieceSavedCord[i].x >= selectedPieceSavedCord[0].x){
-                                selectedPiece[i]->x = selectedPiece[0]->x + (selectedPieceSavedCord[i].x - selectedPieceSavedCord[0].x);
-                            }
 
-                            if (selectedPieceSavedCord[i].y < selectedPieceSavedCord[0].y){
-                                selectedPiece[i]->y = selectedPiece[0]->y - (selectedPieceSavedCord[0].y - selectedPieceSavedCord[i].y);
-                            } else if (selectedPieceSavedCord[i].y >= selectedPieceSavedCord[0].y){
-                                selectedPiece[i]->y = selectedPiece[0]->y + (selectedPieceSavedCord[i].y - selectedPieceSavedCord[0].y);
-                            }
+                            for (int j = 0; j < NUMBER_PART_PIECE; ++j) {
 
-                        }
+                                if (selectedPieceSavedCord[j].x < selectedPieceSavedCord[0].x) {
+                                    selectedPiece[j]->x = selectedPiece[0]->x -
+                                                          (selectedPieceSavedCord[0].x - selectedPieceSavedCord[j].x);
+                                } else if (selectedPieceSavedCord[j].x >= selectedPieceSavedCord[0].x) {
+                                    selectedPiece[j]->x = selectedPiece[0]->x +
+                                                          (selectedPieceSavedCord[j].x - selectedPieceSavedCord[0].x);
+                                }
+
+                                if (selectedPieceSavedCord[j].y < selectedPieceSavedCord[0].y) {
+                                    selectedPiece[j]->y = selectedPiece[0]->y -
+                                                          (selectedPieceSavedCord[0].y - selectedPieceSavedCord[j].y);
+                                } else if (selectedPieceSavedCord[j].y >= selectedPieceSavedCord[0].y) {
+                                    selectedPiece[j]->y = selectedPiece[0]->y +
+                                                          (selectedPieceSavedCord[j].y - selectedPieceSavedCord[0].y);
+                                }
+
+                            }
+                        setGrid(gridSquares, selectedPiece, 60, SDL_Pieces[rankPieceSelected].color);
+
                     }
+
                     break;
 
                 case SDL_MOUSEBUTTONUP:
@@ -143,23 +142,8 @@ int main() {
         SDL_SetRenderDrawColor(renderer, 125, 125, 125, 0);
         SDL_RenderFillRect(renderer,&partDispalyScore);
 
-        for (int i = 0; i < 12; ++i) {
-            for (int j = 0; j <NUMBER_PART_PIECE; ++j) {
-                for (int k = 0; k < NUMBER_PART_PIECE; ++k) {
-                    if(isPieceSelected){ // si un carré et sur la grille on ne touche pas sa couleur.
-                        if (1 == squareOverGrid[k]){
-                            SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0); // on fait disparaitre le carré
-                        } else {
-                            SDL_SetRenderDrawColor(renderer, SDL_Pieces[rankPieceSelected].color.r, SDL_Pieces[rankPieceSelected].color.g, SDL_Pieces[rankPieceSelected].color.b, 0);
-                        }
-                        SDL_RenderFillRect(renderer, selectedPiece[k]);
-                    }
-                }
-            }
-        }
-
-        gridSquares = displayGrid(10, 6, &window);
-        displayPieces(&window,rankPieceSelected ,&SDL_Pieces, &pieces, 12, MAX_SIZE, MAX_SIZE);
+        displayPieces(&window,&SDL_Pieces, &pieces, 12, selectedPiece, rankPieceSelected);
+        displayGrid(10, 6, &window, &gridSquares, SDL_Pieces);
         SDL_RenderPresent(renderer);
     }
 
