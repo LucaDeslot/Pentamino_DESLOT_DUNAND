@@ -98,7 +98,9 @@ int main() {
                                 }
 
                             }
+                    }
 
+                    if (gridSquares != NULL){
                         setGrid(gridSquares, &(SDL_Pieces[rankPieceSelected]), 60, SDL_Pieces[rankPieceSelected].color,
                                 rankPieceSelected);
                     }

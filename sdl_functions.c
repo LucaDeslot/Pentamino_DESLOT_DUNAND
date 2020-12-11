@@ -209,6 +209,11 @@ void setGrid(struct gridSquare *grid, struct piece *selectedPiece, int gridSize,
 }
 
     if (cursorOut){
+        for (int i = 0; i < gridSize; ++i) {
+            if (grid[i].pieceOver == rankSelectedPiece){
+                grid[i].pieceOver = -1;
+            }
+        }
         razGrid(grid, gridSize);
     }
 }
@@ -257,7 +262,7 @@ placePiece(struct gridSquare *grid, int gridSize, int rankSelectedPiece, struct 
             for (int j = 0; j < NUMBER_PART_PIECE; ++j) {
                 if ((*selectedPiece).rects[j].x == grid[i].rect.x && (*selectedPiece).rects[j].y == grid[i].rect.y ){
                     grid[i].color = pieceColor;
-                    grid[i].pieceOver = 1;
+                    grid[i].pieceOver = rankSelectedPiece;
                     break;
                 } else {
                     grid[i].color.r = 182;
@@ -270,7 +275,7 @@ placePiece(struct gridSquare *grid, int gridSize, int rankSelectedPiece, struct 
     } else {
         for (int i = 0; i < gridSize; ++i) {
             if (grid[i].pieceOver == rankSelectedPiece){
-                grid[i].pieceOver = -1; 
+                grid[i].pieceOver = -1;
             }
         }
         razGrid(grid,gridSize);
@@ -280,7 +285,7 @@ placePiece(struct gridSquare *grid, int gridSize, int rankSelectedPiece, struct 
 
 void razGrid(struct gridSquare *grid, int gridSize){
     for (int i = 0; i < gridSize; ++i) {
-        if(grid[i].pieceOver == 0){
+        if(grid[i].pieceOver == -1){
             grid[i].color.r = 182;
             grid[i].color.g = 182;
             grid[i].color.b = 182;
@@ -330,6 +335,7 @@ void putPieceOnGrid(struct gridSquare *grid, int gridSize, struct piece (*pieces
         for (int j = 0; j < NUMBER_PART_PIECE; ++j) {
             if ((*pieces)[*rankPieceSelected].rects[j].x == grid[i].rect.x && (*pieces)[*rankPieceSelected].rects[j].y == grid[i].rect.y){
                 grid[i].color = color;
+                grid[i].pieceOver = *rankPieceSelected;
                 flag = 1;
             }
         }
