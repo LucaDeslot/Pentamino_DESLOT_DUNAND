@@ -115,7 +115,11 @@ int main() {
                                     rankPieceSelected = i;
                                     clickedPoint.y = SDL_Pieces[i].rects[0].y;
                                     clickedPoint.x = SDL_Pieces[i].rects[0].x;
-                                    setSizePiece(&(SDL_Pieces[rankPieceSelected]), 0);
+                                    if (getGridSquareWithPiece(gridSquares,60,SDL_Pieces[rankPieceSelected].rects[0]) != -1){
+                                        setSizePiece(&(SDL_Pieces[rankPieceSelected]), 1);
+                                    } else {
+                                        setSizePiece(&(SDL_Pieces[rankPieceSelected]), 0);
+                                    }
                                     for (int k = 0; k < NUMBER_PART_PIECE; ++k) {
                                         selectedPieceSavedCord[k].x = SDL_Pieces[rankPieceSelected].rects[k].x;
                                         selectedPieceSavedCord[k].y = SDL_Pieces[rankPieceSelected].rects[k].y;

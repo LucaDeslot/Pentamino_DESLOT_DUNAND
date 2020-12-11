@@ -176,14 +176,6 @@ void displayGrid(int x, int y, SDL_Window **window, struct gridSquare **grid, st
         }
         (*grid)[i].rect.w = (*grid)[0].rect.w;
         (*grid)[i].rect.h = (*grid)[0].rect.h;
-
-       /* for (int j = 0; j < 12; ++j) {
-            for (int k = 0; k < NUMBER_PART_PIECE; ++k) {
-                if (pieces[j].onGrid && (*grid)[i].rect.x == pieces[j].rects[k].x && (*grid)[i].rect.y == pieces[j].rects[k].y){
-
-                }
-            }
-        } */
         
         SDL_SetRenderDrawColor(renderer,(*grid)[i].color.r,(*grid)[i].color.g,(*grid)[i].color.b,255); //Couleur des cases du plateau
         SDL_RenderFillRect(renderer,&(*grid)[i].rect);
@@ -264,7 +256,7 @@ placePiece(struct gridSquare *grid, int gridSize, int rankSelectedPiece, struct 
                     grid[i].color = pieceColor;
                     grid[i].pieceOver = rankSelectedPiece;
                     break;
-                } 
+                }
             }
         }
 
