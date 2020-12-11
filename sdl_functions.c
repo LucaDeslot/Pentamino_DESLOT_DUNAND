@@ -264,11 +264,7 @@ placePiece(struct gridSquare *grid, int gridSize, int rankSelectedPiece, struct 
                     grid[i].color = pieceColor;
                     grid[i].pieceOver = rankSelectedPiece;
                     break;
-                } else {
-                    grid[i].color.r = 182;
-                    grid[i].color.g = 182;
-                    grid[i].color.b = 182;
-                }
+                } 
             }
         }
 
