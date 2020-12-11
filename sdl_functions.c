@@ -245,17 +245,28 @@ placePiece(struct gridSquare *grid, int gridSize, int rankSelectedPiece, struct 
     }
 
     if (allPieceOver) {
-        for (int i = 0; i < NUMBER_PART_PIECE; ++i) {
-            (*selectedPiece).rects[i].x = tempX[i];
-            (*selectedPiece).rects[i].y = tempY[i];
-        }
-
+        int slotAlreadyTaken = 0;
         for (int i = 0; i < gridSize; ++i) {
             for (int j = 0; j < NUMBER_PART_PIECE; ++j) {
-                if ((*selectedPiece).rects[j].x == grid[i].rect.x && (*selectedPiece).rects[j].y == grid[i].rect.y ){
-                    grid[i].color = pieceColor;
-                    grid[i].pieceOver = rankSelectedPiece;
-                    break;
+                if(tempX[j] == grid[i].rect.x && tempY[j] == grid[i].rect.y && (grid[i].pieceOver != rankSelectedPiece && grid[i].pieceOver != -1)){
+                    slotAlreadyTaken = 1;
+                }
+            }
+        }
+
+        if (!slotAlreadyTaken){
+            for (int i = 0; i < NUMBER_PART_PIECE; ++i) {
+                (*selectedPiece).rects[i].x = tempX[i];
+                (*selectedPiece).rects[i].y = tempY[i];
+            }
+
+            for (int i = 0; i < gridSize; ++i) {
+                for (int j = 0; j < NUMBER_PART_PIECE; ++j) {
+                    if ((*selectedPiece).rects[j].x == grid[i].rect.x && (*selectedPiece).rects[j].y == grid[i].rect.y ){
+                        grid[i].color = pieceColor;
+                        grid[i].pieceOver = rankSelectedPiece;
+                        break;
+                    }
                 }
             }
         }
@@ -287,12 +298,10 @@ void setDisplayPieces(struct piece(*partPiece)[12]){//réglage de l'affichage de
     for(int i=0;i<12;i++){//toutes les pieces de la première à la 12ème
         if(i%3==0 && i!=0){
             for(int k=i;k<12;k++){
-                for(int j=0;j<5;j++){//toutes les partie d'une pièce
+                for(int j=0;j<NUMBER_PART_PIECE;j++){//toutes les partie d'une pièce
                     if(j==0){
                         if(k%3==0){
                             abscissa=(*partPiece)[k].rects[j].x;
-                        }else if(k%3==1){
-                            abscissa=(*partPiece)[k].rects[j].x-((k%3)*100);
                         }else{
                             abscissa=(*partPiece)[k].rects[j].x-((k%3)*100);
                         }

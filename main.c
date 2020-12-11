@@ -60,7 +60,7 @@ int main() {
     while(!exit){//boucle principale du jeu
         //TODO: il faut que numberPieces soit dynamique, utiliser la fonction findPiecesNumber() ?
 
-        while( SDL_PollEvent( &event ) )
+        while(SDL_PollEvent(&event))
             switch(event.type){
                 case SDL_QUIT:exit = true;
                     break;
@@ -108,10 +108,12 @@ int main() {
                     break;
 
                 case SDL_MOUSEBUTTONDOWN:
+                    printf("Souris : %d,%d\n",event.motion.x,event.motion.y);
+                    printf("Rectangle : %d,%d",SDL_Pieces[3].rects[0].x,SDL_Pieces[3].rects[0].y);
                     if (rankPieceSelected == -1){
                         for (int i = 0; i < 12; ++i) {
                             for (int j = 0; j < NUMBER_PART_PIECE; ++j) {
-                                if(SDL_PointInRect(&mousePosition,&SDL_Pieces[i].rects[j])){
+                                if(SDL_PointInRect(&mousePosition,&(SDL_Pieces[i].rects[j]))){
                                     rankPieceSelected = i;
                                     clickedPoint.y = SDL_Pieces[i].rects[0].y;
                                     clickedPoint.x = SDL_Pieces[i].rects[0].x;
