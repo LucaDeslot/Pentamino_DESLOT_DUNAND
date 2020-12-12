@@ -1,11 +1,10 @@
 #include <stdlib.h>
+#include <dirent.h>
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
 #include <SDL2/SDL.h>
-/*#include <SDL2/SDL_ttf.h>
-#include "SDL2_ttf/SDL_ttf.h"*/
-
+#include <SDL2/SDL_ttf.h>
 #include "main.h"
 #include "sdl_functions.h"
 
@@ -26,7 +25,7 @@ int main() {
         printf("Erreur lors de la creation d'une fenetre : %s",SDL_GetError());
     }
     //Création du renderer
-    SDL_Renderer* renderer=SDL_CreateRenderer(window,-1,0);
+    SDL_Renderer* renderer=SDL_CreateRenderer(window,-1,SDL_RENDERER_ACCELERATED);
 
     if(SDL_Init(SDL_INIT_VIDEO) < 0){// Initialisation de la SDL
         printf("Erreur d’initialisation de la SDL: %s",SDL_GetError());
@@ -34,29 +33,22 @@ int main() {
         return EXIT_FAILURE;
     }// Créer la fenêtre
 
-    if(window == NULL){// En cas d’erreur
-        printf("Erreur de la creation d’une fenetre: %s",SDL_GetError());
-        SDL_Quit();
-        return EXIT_FAILURE;
-    }
-
-    /*if(TTF_Init()==-1){
-        printf("Erreur lors de l'initialisation de la TTF : %s",TTF_GetError());
-    }
-    TTF_Font *font=TTF_OpenFont("./arial.ttf",28);*/
-
-
     // Mettre en place un contexte de rendu de l’écran
     int** grid = NULL;
     int (*pieces) [MAX_SIZE][MAX_SIZE] = NULL; //Tableau dynamique de tableau 2D d'int, chaque rang du tableau correspond à une pièce
     createPieces(&pieces, "0", &grid);
-
+    
     SDL_Rect selectedPieceSavedCord[NUMBER_PART_PIECE];
     SDL_Point mousePosition;
     SDL_Point clickedPoint;
     int rankPieceSelected = -1;
     struct gridSquare *gridSquares = NULL;
     int isPieceBig = 0;
+
+    TTF_Init();
+    TTF_Font *font=TTF_OpenFont("../arial.ttf",28);
+    SDL_Color color={0,0,0,0};
+
     while(!exit){//boucle principale du jeu
         //TODO: il faut que numberPieces soit dynamique, utiliser la fonction findPiecesNumber() ?
 
@@ -135,7 +127,6 @@ int main() {
 
                     break;
             }
-
         SDL_SetRenderDrawColor(renderer, 255,255,255,255);//couleur du fond
         SDL_RenderClear(renderer);
 
@@ -149,13 +140,52 @@ int main() {
 
         displayPieces(&window,&SDL_Pieces, &pieces, 12, rankPieceSelected);
         displayGrid(10, 6, &window, &gridSquares, SDL_Pieces);
+
+
+        //Définition du texte
+        char numero[3];
+        SDL_Rect text_pos;//position
+        text_pos.x=20;
+        text_pos.y=HEIGHT_SCREEN-100;
+
+        /*fonction inspiré de l'algo de :
+        https://waytolearnx.com/2019/09/lister-les-fichiers-dans-un-repertoire-en-c.html*/
+        /*char* nameLevel[getNumberLevel()];
+        struct dirent *dir;
+        DIR *d=opendir("../");
+        if (d){
+            int i=0;
+            while ((dir = readdir(d)) != NULL){
+                if(strstr(dir->d_name,"level")!=NULL){//s'il y a un fichier level...
+                    nameLevel[i]=dir->d_name;
+                    i++;
+                }
+            }
+            closedir(d);
+        }*/
+
+        char msg[15]="Niveau ";
+        for(int i=0;i<getNumberLevel();i++){
+            msg[7]=i+49;//i+49 -> code ascii
+            SDL_Texture* text=loadText(msg,renderer,font,color);
+            int wText=0;
+            int hText=0;
+            SDL_QueryTexture(text,NULL,NULL,&wText,&hText);
+            text_pos.w=wText;
+            text_pos.h=hText;
+            SDL_RenderCopy(renderer,text,NULL,&text_pos);//affichage du texte
+            text_pos.x+=200;
+        }
+
+
         SDL_RenderPresent(renderer);
     }
 
+    //free(nameLevel);//libération du double tab pour afficher les noms des niveaux
     free(pieces);
     SDL_DestroyWindow(window);
-    /*TTF_CloseFont(font);//on désaloue TTF
-    TTF_Quit();*/
+    TTF_CloseFont(font);//on désaloue TTF
+    TTF_Quit();
     return 0;
 }
 
@@ -236,6 +266,22 @@ void createPieces(int (**pieces)[MAX_SIZE][MAX_SIZE], char* levelNumber, int*** 
         printf("Le fichier n'a pas pu etre ouvert fonction createPieces");
     }
 }
+/*fonction inspiré de l'algo de :
+https://waytolearnx.com/2019/09/lister-les-fichiers-dans-un-repertoire-en-c.html*/
+int getNumberLevel(){
+    int numberLevel=0;
+    struct dirent *dir;
+    DIR *d=opendir("../");
+    if (d){
+        while ((dir = readdir(d)) != NULL){
+            if(strstr(dir->d_name,"level")!=NULL){//s'il y a un fichier level...
+                numberLevel++;
+            }
+        }
+        closedir(d);
+    }
+    return numberLevel;
+}
 
 //Parcours le fichier pour trouver le nombre de pièces
 int findPiecesNumber(char *levelNumber){
@@ -264,7 +310,7 @@ int findPiecesNumber(char *levelNumber){
 char* getFileNameFromLevel(char* levelNumber) {
     char* fileName;
     if(atoi(levelNumber)>=10){
-        fileName=(char*)malloc(sizeof(char)*15);
+        fileName=(char*)malloc(sizeof(char)*15);//TODO il faut free() ici je pense
     }
     else{
         fileName=(char*)malloc(sizeof(char)*14);
