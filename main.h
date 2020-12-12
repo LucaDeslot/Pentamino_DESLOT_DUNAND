@@ -16,3 +16,7 @@ void createPieces(int (**pieces)[MAX_SIZE][MAX_SIZE], char* levelNumber, int*** 
 int findPiecesNumber(char *levelNumber);
 
 char* getFileNameFromLevel(char* levelNumber);
+
+char* getNamesLevels(int numberLevel);
+
+int getNumberLevel();

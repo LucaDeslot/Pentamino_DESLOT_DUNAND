@@ -35,23 +35,14 @@ struct gridSquare {
 };
 
 void initColor(struct piece (*piece)[12]);
-
 void setSizePiece(struct piece * piece, int isPieceBig);
-
 void displayPieces(SDL_Window (**window),struct piece (*partPiece)[12],int (**pieces)[NUMBER_PART_PIECE][NUMBER_PART_PIECE],int numberPieces,int rankSelectedPiece);//affiche toutes les pièces
 void displayPiece(int (**pieces)[NUMBER_PART_PIECE][NUMBER_PART_PIECE], int pieceAfficher,int numberPiece, struct piece (*partPiece)[12],int shiftOrdinate,int shiftAbscissa);//affiche une pièce
-
 void displayGrid(int x, int y, SDL_Window **window, struct gridSquare **grid, struct piece *pieces);
-
 void setDisplayPieces(struct piece(*partPiece)[12]);
-void setGrid(struct gridSquare *grid, struct piece *selectedPiece, int gridSize, struct color pieceColor,
-             int rankSelectedPiece);
-
-void
-placePiece(struct gridSquare *grid, int gridSize, int rankSelectedPiece, struct piece *selectedPiece, struct color pieceColor);
-
+void setGrid(struct gridSquare *grid, struct piece *selectedPiece, int gridSize, struct color pieceColor,int rankSelectedPiece);
+void placePiece(struct gridSquare *grid, int gridSize, int rankSelectedPiece, struct piece *selectedPiece, struct color pieceColor);
 int getGridSquareWithPiece(struct gridSquare *grid, int gridSize ,SDL_Rect piece);
-
 void razGrid(struct gridSquare *grid, int gridSize);
-
 void putPieceOnGrid(struct gridSquare *grid, int gridSize, struct piece (*pieces)[12], struct color color, int *rankPieceSelected);
+SDL_Texture* loadText(const char* message, SDL_Renderer* renderer, TTF_Font *font, SDL_Color color);

@@ -2,7 +2,8 @@
 // Created by nathand on 31/10/2020.
 //
 #include <stdbool.h>
-#include "SDL2/SDL.h"
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 
 #include "sdl_functions.h"
 
@@ -210,8 +211,7 @@ void setGrid(struct gridSquare *grid, struct piece *selectedPiece, int gridSize,
     }
 }
 
-void
-placePiece(struct gridSquare *grid, int gridSize, int rankSelectedPiece, struct piece *selectedPiece, struct color pieceColor) {
+void placePiece(struct gridSquare *grid, int gridSize, int rankSelectedPiece, struct piece *selectedPiece, struct color pieceColor) {
 
     int maxY = 0, maxX = 0, minY = HEIGHT_SCREEN, minX = WIDTH_SCREEN;
     int maxXGrid = grid[gridSize-1].rect.x, maxYGrid = grid[gridSize-1].rect.y, minXGrid = grid[0].rect.x, minYGrid = grid[0].rect.y;
@@ -343,4 +343,8 @@ void putPieceOnGrid(struct gridSquare *grid, int gridSize, struct piece (*pieces
         *rankPieceSelected = -1;
     }
 
+}
+
+SDL_Texture* loadText(const char* message, SDL_Renderer* renderer, TTF_Font *font, SDL_Color color){
+    return SDL_CreateTextureFromSurface(renderer, TTF_RenderText_Solid(font, message, color));
 }
