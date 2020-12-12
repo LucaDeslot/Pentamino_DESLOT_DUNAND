@@ -28,3 +28,6 @@ Commencement du drag and drop pour déplacer les pièces (drag fonctionnel) sur 
 
 #### *Semaine du 30 au 7 décembre*
 Ajout de variables globales pour dynamiser le programme, ajout d'éléments graphiques à l'interface de jeu. Modifications mineures dans le code. Ajout de la fonction de détection de la pièce sur le plateau de jeu. Ajout de la fonction setDisplayPieces() qui permet d'afficher les pièces dans la zone qui leur est réservée : problème avec le drag and drop.
+
+#### *Semaine du 7 au 14 décembre*
+Amélioration du drag and drop, ajout du magnétisme, corrections de bugs, on peux reprendre une pièce sur le tableau de jeu, implémentation de SDL_ttf, commencement d'un menu de naviguation entre les niveaux.
