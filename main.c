@@ -100,8 +100,8 @@ int main() {
                     break;
 
                 case SDL_MOUSEBUTTONDOWN:
-                    printf("Souris : %d,%d\n",event.motion.x,event.motion.y);
-                    printf("Rectangle : %d,%d",SDL_Pieces[3].rects[0].x,SDL_Pieces[3].rects[0].y);
+                    /*printf("Souris : %d,%d\n",event.motion.x,event.motion.y);
+                    printf("Rectangle : %d,%d",SDL_Pieces[3].rects[0].x,SDL_Pieces[3].rects[0].y);*/
                     if (rankPieceSelected == -1){
                         for (int i = 0; i < 12; ++i) {
                             for (int j = 0; j < NUMBER_PART_PIECE; ++j) {
@@ -183,6 +183,7 @@ int main() {
 
     //free(nameLevel);//libération du double tab pour afficher les noms des niveaux
     free(pieces);
+    free(grid);//alloué dans createPieces
     SDL_DestroyWindow(window);
     TTF_CloseFont(font);//on désaloue TTF
     TTF_Quit();
@@ -192,8 +193,10 @@ int main() {
 void createPieces(int (**pieces)[MAX_SIZE][MAX_SIZE], char* levelNumber, int*** grid){
 
     //ouverture du fichier et allocation mémoire du tableau de pièce
-    char* fileName = getFileNameFromLevel(levelNumber);
+    char* fileName;
+    getFileNameFromLevel(levelNumber, &fileName);
     FILE* file = fopen(fileName, "r");
+    //soucis avec fileName, il faut pas allouer fileName dynamiquement dans la fonction getFileName..() sinon on perds le pointeur pour libérer ensuite
     free(fileName);
     *pieces = malloc(sizeof(int[MAX_SIZE][MAX_SIZE])*findPiecesNumber(levelNumber));
 
@@ -219,10 +222,13 @@ void createPieces(int (**pieces)[MAX_SIZE][MAX_SIZE], char* levelNumber, int*** 
     }
 
     *grid = (int**) malloc(col*sizeof(int*));
+    //*grid = (int**) malloc(row*col*sizeof(int) + row*sizeof(int*));
     for (int i = 0; i < col; i++){
+        //pas faire de malloc dans une boucle sinon on perd les pointeurs pour free -> fuite mémoire
+        //TODO : gestion fuite mémoire
         (*grid)[i] = (int*) malloc(row*sizeof(int));
         for(int j = 0; j < row; j++){
-            (*grid)[i][j] = 0;
+            (*grid)[i][j]=0;
         }
     }
 
@@ -288,7 +294,9 @@ int findPiecesNumber(char *levelNumber){
     int readChar = 0;
     int nbPiece = 0;
     bool emptyRow = true;
-    FILE* file = fopen(getFileNameFromLevel(levelNumber), "r");
+    char* fileName;
+    getFileNameFromLevel(levelNumber,&fileName);
+    FILE* file = fopen(fileName, "r");
 
     do {
         readChar = fgetc(file);
@@ -307,17 +315,10 @@ int findPiecesNumber(char *levelNumber){
     return nbPiece; // Le code compte à partir de la première pièce, inutile de retirer la grille en faisant -1
 }
 
-char* getFileNameFromLevel(char* levelNumber) {
-    char* fileName;
-    if(atoi(levelNumber)>=10){
-        fileName=(char*)malloc(sizeof(char)*15);//TODO il faut free() ici je pense
-    }
-    else{
-        fileName=(char*)malloc(sizeof(char)*14);
-    }
+void getFileNameFromLevel(char* levelNumber, char (**fileName)) {
+    *fileName=(char*)malloc(sizeof(char)*14);
     //concaténation pour le nom du fichier à parcourir
-    strcpy(fileName,"../level");// ../ car l'exe se créer dans CMakeFiles/
-    strcat(fileName, levelNumber);
-    strcat(fileName, ".txt");
-    return fileName;
+    strcpy(*fileName,"../level");// ../ car l'exe se créer dans CMakeFiles/
+    strcat(*fileName, levelNumber);
+    strcat(*fileName, ".txt");
 }

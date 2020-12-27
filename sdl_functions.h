@@ -1,7 +1,6 @@
 //
 // Created by nathand on 31/10/2020.
 //
-#include "SDL2/SDL.h"
 
 #ifndef PENTAMINO_DESLOT_DUNAND_SDL_FUNCTIONS_H
 #define PENTAMINO_DESLOT_DUNAND_SDL_FUNCTIONS_H
