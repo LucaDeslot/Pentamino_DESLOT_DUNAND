@@ -35,6 +35,7 @@ int main() {
 
     // Mettre en place un contexte de rendu de l’écran
     int** grid = NULL;
+    int isWin=0;
     int (*pieces) [MAX_SIZE][MAX_SIZE] = NULL; //Tableau dynamique de tableau 2D d'int, chaque rang du tableau correspond à une pièce
     createPieces(&pieces, "0", &grid);
     
@@ -49,7 +50,27 @@ int main() {
     TTF_Font *font=TTF_OpenFont("../arial.ttf",28);
     SDL_Color color={0,0,0,0};
 
-    while(!exit){//boucle principale du jeu
+    SDL_Rect* levels=malloc(getNumberLevel()*sizeof (SDL_Rect));
+    SDL_Surface** images=(SDL_Surface*)malloc(getNumberLevel()*sizeof (SDL_Surface*));
+    int posLevelX=WIDTH_SCREEN*0.1;
+    int posLevelY=HEIGHT_SCREEN*0.8;
+
+    char nameFile[8];
+    for(int i=0;i<getNumberLevel();i++){
+        levels[i].x=posLevelX;
+        levels[i].y=posLevelY;
+        //posLevelX+=WIDTH_SCREEN*0.1;
+        posLevelX+=100;
+
+        levels[i].w=levels[i].h=70;
+
+        memset(nameFile,0,sizeof (nameFile));
+        nameFile[0]=i+49;
+        strcat(nameFile,".bmp");
+        images[i]=SDL_LoadBMP(nameFile);
+    }
+
+    while(!exit && !isWin){//boucle principale du jeu
         //TODO: il faut que numberPieces soit dynamique, utiliser la fonction findPiecesNumber() ?
 
         while(SDL_PollEvent(&event))
@@ -101,7 +122,16 @@ int main() {
 
                 case SDL_MOUSEBUTTONDOWN:
                     /*printf("Souris : %d,%d\n",event.motion.x,event.motion.y);
-                    printf("Rectangle : %d,%d",SDL_Pieces[3].rects[0].x,SDL_Pieces[3].rects[0].y);*/
+                    printf(" Rectangle : %d,%d",SDL_Pieces[3].rects[0].x,SDL_Pieces[3].rects[0].y);*/
+
+                    //VERIFICATION DE SI LA GRILLE EST REMPLIE
+                    isWin=1;//true
+                    for(int i=0;i<ROW_GRID*COL_GRID;i++){
+                        if(gridSquares[i].pieceOver==-1){//toutes les parties de la grille ne sont pas complets
+                            isWin=0;//false
+                        }
+                    }//si isWin reste à 1 on a gagné
+
                     if (rankPieceSelected == -1){
                         for (int i = 0; i < 12; ++i) {
                             for (int j = 0; j < NUMBER_PART_PIECE; ++j) {
@@ -122,15 +152,16 @@ int main() {
                             }
                         }
                     } else {
-                        putPieceOnGrid(gridSquares,60,&SDL_Pieces,SDL_Pieces[rankPieceSelected].color,&rankPieceSelected);
+                        putPieceOnGrid(gridSquares,COL_GRID*ROW_GRID,&SDL_Pieces,SDL_Pieces[rankPieceSelected].color,&rankPieceSelected);
                     }
 
                     break;
             }
+
         SDL_SetRenderDrawColor(renderer, 255,255,255,255);//couleur du fond
         SDL_RenderClear(renderer);
 
-        SDL_Rect partDisplayPiece={0,0,WIDTH_SCREEN/4,HEIGHT_SCREEN};//partie gauche de l'écran qui contient l'affichage des pièces
+        SDL_Rect partDisplayPiece={0,0,WIDTH_SCREEN,HEIGHT_SCREEN/9};//partie haute de l'écran qui contient l'affichage des pièces
         SDL_SetRenderDrawColor(renderer, 125, 125, 125, 0);
         SDL_RenderFillRect(renderer,&partDisplayPiece);
 
@@ -138,15 +169,18 @@ int main() {
         SDL_SetRenderDrawColor(renderer, 125, 125, 125, 0);
         SDL_RenderFillRect(renderer,&partDispalyScore);
 
+        SDL_SetRenderDrawColor(renderer,0,0,0,255);
+        SDL_RenderFillRects(renderer,levels,getNumberLevel());
+
         displayPieces(&window,&SDL_Pieces, &pieces, 12, rankPieceSelected);
-        displayGrid(10, 6, &window, &gridSquares, SDL_Pieces);
+        displayGrid(COL_GRID, ROW_GRID, &window, &gridSquares, SDL_Pieces);
 
 
         //Définition du texte
-        char numero[3];
+        /*char numero[3];
         SDL_Rect text_pos;//position
         text_pos.x=20;
-        text_pos.y=HEIGHT_SCREEN-100;
+        text_pos.y=HEIGHT_SCREEN-100;*/
 
         /*fonction inspiré de l'algo de :
         https://waytolearnx.com/2019/09/lister-les-fichiers-dans-un-repertoire-en-c.html*/
@@ -164,8 +198,9 @@ int main() {
             closedir(d);
         }*/
 
-        char msg[15]="Niveau ";
-        for(int i=0;i<getNumberLevel();i++){
+        /*char msg[15]="Niveau ";
+        int numberLevel=getNumberLevel();
+        for(int i=0;i<numberLevel;i++){
             msg[7]=i+49;//i+49 -> code ascii
             SDL_Texture* text=loadText(msg,renderer,font,color);
             int wText=0;
@@ -175,13 +210,16 @@ int main() {
             text_pos.h=hText;
             SDL_RenderCopy(renderer,text,NULL,&text_pos);//affichage du texte
             text_pos.x+=200;
-        }
-
+        }*/
 
         SDL_RenderPresent(renderer);
     }
 
-    //free(nameLevel);//libération du double tab pour afficher les noms des niveaux
+    if(isWin){
+        printf("\nGG my boy\n");
+    }
+
+    free(levels);
     free(pieces);
     free(grid);//alloué dans createPieces
     SDL_DestroyWindow(window);
@@ -196,6 +234,7 @@ void createPieces(int (**pieces)[MAX_SIZE][MAX_SIZE], char* levelNumber, int*** 
     char* fileName;
     getFileNameFromLevel(levelNumber, &fileName);
     FILE* file = fopen(fileName, "r");
+    //TODO
     //soucis avec fileName, il faut pas allouer fileName dynamiquement dans la fonction getFileName..() sinon on perds le pointeur pour libérer ensuite
     free(fileName);
     *pieces = malloc(sizeof(int[MAX_SIZE][MAX_SIZE])*findPiecesNumber(levelNumber));

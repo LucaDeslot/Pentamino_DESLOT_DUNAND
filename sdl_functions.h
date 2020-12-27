@@ -23,6 +23,7 @@ typedef struct color {
 
 struct piece {
     SDL_Rect rects[5];
+    SDL_Rect initialPosition[5];
     piece_color color;
     int onGrid;
 };
@@ -38,7 +39,7 @@ void setSizePiece(struct piece * piece, int isPieceBig);
 void displayPieces(SDL_Window (**window),struct piece (*partPiece)[12],int (**pieces)[NUMBER_PART_PIECE][NUMBER_PART_PIECE],int numberPieces,int rankSelectedPiece);//affiche toutes les pièces
 void displayPiece(int (**pieces)[NUMBER_PART_PIECE][NUMBER_PART_PIECE], int pieceAfficher,int numberPiece, struct piece (*partPiece)[12],int shiftOrdinate,int shiftAbscissa);//affiche une pièce
 void displayGrid(int x, int y, SDL_Window **window, struct gridSquare **grid, struct piece *pieces);
-void setDisplayPieces(struct piece(*partPiece)[12]);
+void setDisplayPiece(struct piece(*partPiece)[12], int numPiece, int shiftOrdinate, int abscissa);
 void setGrid(struct gridSquare *grid, struct piece *selectedPiece, int gridSize, struct color pieceColor,int rankSelectedPiece);
 void placePiece(struct gridSquare *grid, int gridSize, int rankSelectedPiece, struct piece *selectedPiece, struct color pieceColor);
 int getGridSquareWithPiece(struct gridSquare *grid, int gridSize ,SDL_Rect piece);

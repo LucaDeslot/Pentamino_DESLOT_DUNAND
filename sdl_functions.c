@@ -37,8 +37,8 @@ void displayPieces(SDL_Window (**window),struct piece (*partPiece)[12],int (**pi
         printf("Erreur lors de l'initialisation du renderer : %s", SDL_GetError());
     }
 
-    int shiftOrdinate=0;//décallage des ordonnées
-    int shiftAbscissa=0;//décallage des abscisses
+    int shiftOrdinate=10;//décallage des ordonnées
+    int shiftAbscissa=20;//décallage des abscisses
 
     for(int i=0;i<12;i++){//TODO  12 doit être dynamique ici
 
@@ -119,12 +119,18 @@ void displayPiece(int (**pieces)[NUMBER_PART_PIECE][NUMBER_PART_PIECE],int piece
                     }
                 }
             }
+            //TODO
+            (*partPiece)[pieceAfficher].initialPosition[0].x=(*partPiece)[pieceAfficher].rects[0].x;
+            (*partPiece)[pieceAfficher].initialPosition[0].y=(*partPiece)[pieceAfficher].rects[0].y;
+
+            (*partPiece)[pieceAfficher].initialPosition[0].w=(*partPiece)[pieceAfficher].rects[0].w;
+            (*partPiece)[pieceAfficher].initialPosition[0].h=(*partPiece)[pieceAfficher].rects[0].h;
         }
         countSpaceInPiece=0;//reboot du compteur
         isEndOfLine=false;//il faut la remettre à false puisqu'on passe à la ligne suivante
     }
 
-    setDisplayPieces(partPiece);//réglage de l'affichage des pièces sur le côté gauche de l'écran
+    //setDisplayPiece(partPiece, pieceAfficher, shiftOrdinate, shiftAbscissa);//réglage de l'affichage des pièces sur le côté gauche de l'écran
 }
 
 void setSizePiece(struct piece * piece, int isPieceBig) {
@@ -148,7 +154,7 @@ void displayGrid(int x, int y, SDL_Window **window, struct gridSquare **grid, st
     SDL_GetWindowSize(*window, &gridStartX, NULL);
     int gridSize = x * y;
 
-    gridStartX /= 3;
+    gridStartX /= 5;
     if (*grid == NULL){
         *grid = malloc(gridSize * sizeof(struct gridSquare));
         for (int i = 0; i <x*y; ++i) {
@@ -160,7 +166,7 @@ void displayGrid(int x, int y, SDL_Window **window, struct gridSquare **grid, st
     }
 
     (*grid)[0].rect.x = gridStartX;
-    (*grid)[0].rect.y = HEIGHT_SCREEN / 12;
+    (*grid)[0].rect.y = HEIGHT_SCREEN / 8;
     (*grid)[0].rect.w = PIECE_SIZE_GRID_PX;
     (*grid)[0].rect.h = (*grid)[0].rect.w;
     SDL_SetRenderDrawColor(renderer,(*grid)[0].color.r,(*grid)[0].color.g,(*grid)[0].color.b,255); //Couleur des cases du plateau
@@ -292,26 +298,17 @@ void razGrid(struct gridSquare *grid, int gridSize){
     }
 }
 
-void setDisplayPieces(struct piece(*partPiece)[12]){//réglage de l'affichage des pièces sur la partie prévue à cet effet, sinon elles débordent de l'affichage
-    int shiftOrdinate=100;
-    int abscissa=0;
-    for(int i=0;i<12;i++){//toutes les pieces de la première à la 12ème
-        if(i%3==0 && i!=0){
-            for(int k=i;k<12;k++){
+void setDisplayPiece(struct piece(*partPiece)[12], int numPiece, int shiftOrdinate, int abscissa){//réglage de l'affichage d'une pièce sur la partie prévue à cet effet, sinon elle déborde de l'affichage
+        if(numPiece%3==0 && numPiece!=0){
                 for(int j=0;j<NUMBER_PART_PIECE;j++){//toutes les partie d'une pièce
                     if(j==0){
-                        if(k%3==0){
-                            abscissa=(*partPiece)[k].rects[j].x;
-                        }else{
-                            abscissa=(*partPiece)[k].rects[j].x-((k%3)*100);
-                        }
+                        abscissa=(*partPiece)[numPiece].rects[j].x-((numPiece%3)*100);
                     }
-                    (*partPiece)[k].rects[j].x-=abscissa;
-                    (*partPiece)[k].rects[j].y+=shiftOrdinate;
+                    (*partPiece)[numPiece].rects[j].x-=abscissa;
+                    (*partPiece)[numPiece].rects[j].y+=shiftOrdinate;
                 }
-            }
         }
-    }
+
 }
 
 int getGridSquareWithPiece(struct gridSquare *grid, int gridSize ,SDL_Rect piece){
@@ -330,7 +327,7 @@ void putPieceOnGrid(struct gridSquare *grid, int gridSize, struct piece (*pieces
     int flag = 0;
     for (int i = 0; i < gridSize; ++i) {
         for (int j = 0; j < NUMBER_PART_PIECE; ++j) {
-            if ((*pieces)[*rankPieceSelected].rects[j].x == grid[i].rect.x && (*pieces)[*rankPieceSelected].rects[j].y == grid[i].rect.y){
+            if ((*pieces)[*rankPieceSelected].rects[j].x == grid[i].rect.x && (*pieces)[*rankPieceSelected].rects[j].y == grid[i].rect.y){//on est sur la grille
                 grid[i].color = color;
                 grid[i].pieceOver = *rankPieceSelected;
                 flag = 1;
@@ -340,8 +337,17 @@ void putPieceOnGrid(struct gridSquare *grid, int gridSize, struct piece (*pieces
 
     if (flag){
         (*pieces)[*rankPieceSelected].onGrid = 1;
-        *rankPieceSelected = -1;
+    } else {//on remet l'affichage de la pièce en petit
+        for(int i=0;i<NUMBER_PART_PIECE;i++){
+            (*pieces)[*rankPieceSelected].rects[i].x = (*pieces)[*rankPieceSelected].initialPosition[i].x;
+             (*pieces)[*rankPieceSelected].rects[i].y = (*pieces)[*rankPieceSelected].initialPosition[i].y;
+
+             (*pieces)[*rankPieceSelected].rects[i].h = (*pieces)[*rankPieceSelected].initialPosition[i].h;
+             (*pieces)[*rankPieceSelected].rects[i].w = (*pieces)[*rankPieceSelected].initialPosition[i].w;
+        }
+        (*pieces)[*rankPieceSelected].onGrid = 0;
     }
+    *rankPieceSelected = -1;
 
 }
 

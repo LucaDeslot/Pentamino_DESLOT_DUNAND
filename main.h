@@ -10,6 +10,8 @@
 #define MAX_SIZE 5
 #define WIDTH_SCREEN 1280
 #define HEIGHT_SCREEN 720
+#define ROW_GRID 6
+#define COL_GRID 10
 
 void createPieces(int (**pieces)[MAX_SIZE][MAX_SIZE], char* levelNumber, int*** grid);
 
