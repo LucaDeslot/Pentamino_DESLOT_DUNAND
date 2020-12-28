@@ -9,6 +9,9 @@
 #include "sdl_functions.h"
 
 int main() {
+    int currentLevel=0;
+    changeLevel:;
+
     bool exit=false;//sortir de la boucle
     SDL_Event event;//évènement SDL par exemple saisie clavier
     SDL_Init(SDL_INIT_VIDEO);
@@ -16,6 +19,17 @@ int main() {
 
     for (int i = 0; i < 12; ++i) {
         SDL_Pieces[i].onGrid = 0;
+        for(int j=0;j<NUMBER_PART_PIECE;j++){
+            SDL_Pieces[i].rects[j].h = 0;
+            SDL_Pieces[i].rects[j].w = 0;
+            SDL_Pieces[i].rects[j].x = -100;
+            SDL_Pieces[i].rects[j].y = -100;
+
+            SDL_Pieces[i].initialPosition[j].h = 0;
+            SDL_Pieces[i].initialPosition[j].w = 0;
+            SDL_Pieces[i].initialPosition[j].x = -100;
+            SDL_Pieces[i].initialPosition[j].y = -100;
+        }
     }
     //TODO: remplacer le 12 par du dynamisme
 
@@ -37,11 +51,26 @@ int main() {
     int** grid = NULL;
     int isWin=0;
     int (*pieces) [MAX_SIZE][MAX_SIZE] = NULL; //Tableau dynamique de tableau 2D d'int, chaque rang du tableau correspond à une pièce
-    createPieces(&pieces, "0", &grid);
+    char numberLevel[3];
+    sprintf(numberLevel,"%d",currentLevel);
+    createPieces(&pieces, numberLevel, &grid);
     
     SDL_Rect selectedPieceSavedCord[NUMBER_PART_PIECE];
     SDL_Point mousePosition;
     SDL_Point clickedPoint;
+
+    //debug
+    /*if(currentLevel!=0){
+        for(int i=0;i<12;i++){
+            for(int j=0;j<5;j++){
+                for(int k=0;k<5;k++){
+                    printf("%d",pieces[i][j][k]);
+                }
+                printf("\n");
+            }
+        }
+    }*/
+
     int rankPieceSelected = -1;
     struct gridSquare *gridSquares = NULL;
     int isPieceBig = 0;
@@ -52,6 +81,7 @@ int main() {
 
     SDL_Rect* levels=malloc(getNumberLevel()*sizeof (SDL_Rect));
     SDL_Surface** images=(SDL_Surface*)malloc(getNumberLevel()*sizeof (SDL_Surface*));
+    SDL_Texture** textures=(SDL_Texture*)malloc(getNumberLevel()*sizeof(SDL_Texture*));
     int posLevelX=WIDTH_SCREEN*0.1;
     int posLevelY=HEIGHT_SCREEN*0.8;
 
@@ -65,10 +95,14 @@ int main() {
         levels[i].w=levels[i].h=70;
 
         memset(nameFile,0,sizeof (nameFile));
-        nameFile[0]=i+49;
+        strcat(nameFile,"../");
+        nameFile[3]=i+49;
         strcat(nameFile,".bmp");
         images[i]=SDL_LoadBMP(nameFile);
+        textures[i]=SDL_CreateTextureFromSurface(renderer,images[i]);
     }
+
+    int flagLevelChoice=0;//faux car on prend le niveau de base -> level0
 
     while(!exit && !isWin){//boucle principale du jeu
         //TODO: il faut que numberPieces soit dynamique, utiliser la fonction findPiecesNumber() ?
@@ -133,6 +167,23 @@ int main() {
                     }//si isWin reste à 1 on a gagné
 
                     if (rankPieceSelected == -1){
+                        clickedPoint.x=mousePosition.x;
+                        clickedPoint.y=mousePosition.y;
+                        //boutons cliquables
+                        for(int i=0;i<getNumberLevel();i++){
+                            if(clickedPoint.x>=levels[i].x && clickedPoint.x<=(levels[i].x+levels[i].w)){
+                                if(clickedPoint.y>=levels[i].y && clickedPoint.y<=(levels[i].y+levels[i].h)){
+                                    //on est sur un bouton de niveau
+
+                                    if(i!=currentLevel){//on ne peut pas sélectionner le niveau déjà en jeu
+                                        flagLevelChoice=1;//on choisit un niveau
+                                        currentLevel=i;//on set le niveau
+                                        exit=1;
+                                    }
+                                }
+                            }
+                        }
+
                         for (int i = 0; i < 12; ++i) {
                             for (int j = 0; j < NUMBER_PART_PIECE; ++j) {
                                 if(SDL_PointInRect(&mousePosition,&(SDL_Pieces[i].rects[j]))){
@@ -169,8 +220,12 @@ int main() {
         SDL_SetRenderDrawColor(renderer, 125, 125, 125, 0);
         SDL_RenderFillRect(renderer,&partDispalyScore);
 
-        SDL_SetRenderDrawColor(renderer,0,0,0,255);
-        SDL_RenderFillRects(renderer,levels,getNumberLevel());
+        SDL_SetRenderDrawColor(renderer,0,0,0,255);//affichage des niveaux
+        //TODO contour à faire
+        //SDL_RenderFillRects(renderer,levels,getNumberLevel());
+        for(int i=0;i<getNumberLevel();i++){
+            SDL_RenderCopy(renderer,textures[i],NULL,&levels[i]);
+        }
 
         displayPieces(&window,&SDL_Pieces, &pieces, 12, rankPieceSelected);
         displayGrid(COL_GRID, ROW_GRID, &window, &gridSquares, SDL_Pieces);
@@ -215,16 +270,47 @@ int main() {
         SDL_RenderPresent(renderer);
     }
 
-    if(isWin){
-        printf("\nGG my boy\n");
+    while(!exit){
+        while(SDL_PollEvent(&event)){
+            if(event.type==SDL_QUIT){
+                exit=true;
+            } else if(event.type==SDL_KEYDOWN) {
+                if(event.key.keysym.sym==SDLK_ESCAPE){
+                    exit=true;
+                }
+            }
+        }
+
+        if(isWin){
+            isWin=0;//pour éviter une boucle infinie
+            //fenêtre de fin
+
+            SDL_SetRenderDrawColor(renderer,0,0,0,255);
+            SDL_Surface* win=SDL_LoadBMP("../win.bmp");
+            SDL_Texture* winText=SDL_CreateTextureFromSurface(renderer,win);
+            SDL_RenderCopy(renderer,winText,NULL,NULL);
+            SDL_RenderPresent(renderer);
+        }
     }
+
+    //TODO libération mémoire free texture & surface
+    for(int i=0;i<getNumberLevel();i++){
+        SDL_DestroyTexture(textures[i]);
+        SDL_FreeSurface(images[i]);
+    }
+    free(textures);
+    free(images);
 
     free(levels);
     free(pieces);
     free(grid);//alloué dans createPieces
     SDL_DestroyWindow(window);
-    TTF_CloseFont(font);//on désaloue TTF
-    TTF_Quit();
+    SDL_DestroyRenderer(renderer);
+
+    if(flagLevelChoice){//on change de niveau
+        goto changeLevel;
+    }
+
     return 0;
 }
 
