@@ -8,10 +8,17 @@ que le joueur devra glisser les différentes pièces sur le plateau afin de remp
 Le programme est exclusivement développé en C avec la librairie SDL2 (qu'il convient d'installer).
 
 ## Installation et Lancement
-Disponible lorsque le jeu sera en phase de test. 
+Se positionner dans le dossier de votre choix (le jeu sera installé ici).<br>
+```
+sudo apt-get install libsdl2-dev
+git clone https://github.com/LucaDeslot/Pentamino_DESLOT_DUNAND.git
+cd Pentamino_DESLOT_DUNAND/
+make
+./main
+```
 
 ## Equipe
-Projet développé par DUNAND Nathan et DESLOT Luca
+Projet développé par DUNAND Nathan et DESLOT Luca.
 
 ## Rapport hebdomadaire
 #### *Semaine du 19 au 25 octobre*
@@ -31,3 +38,9 @@ Ajout de variables globales pour dynamiser le programme, ajout d'éléments grap
 
 #### *Semaine du 7 au 14 décembre*
 Amélioration du drag and drop, ajout du magnétisme, corrections de bugs, on peux reprendre une pièce sur le tableau de jeu, implémentation de SDL_ttf, commencement d'un menu de naviguation entre les niveaux.
+
+#### *Semaine du 14 au 21 décembre*
+Drag and drop fonctionnel.
+
+#### *Vacances de Noel*
+Ajout de la possibilité de déposer une pièce en dehors de la grille. Implémentation de deux nouveaux niveaux, avec interface cliquable. Possiblité de changer de niveau en cours de jeu. Ajout de la victoire avec message. Réglage des problèmes mémoires avec Valgrind, ajout du makefile, suppression de la SDL_TTF dû à des difficultés. Jeu fonctionnel.
