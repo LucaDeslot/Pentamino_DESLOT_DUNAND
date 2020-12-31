@@ -3,7 +3,6 @@
 //
 #include <stdbool.h>
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_ttf.h>
 
 #include "sdl_functions.h"
 
@@ -349,8 +348,4 @@ void putPieceOnGrid(struct gridSquare *grid, int gridSize, struct piece (*pieces
     }
     *rankPieceSelected = -1;
 
-}
-
-SDL_Texture* loadText(const char* message, SDL_Renderer* renderer, TTF_Font *font, SDL_Color color){
-    return SDL_CreateTextureFromSurface(renderer, TTF_RenderText_Solid(font, message, color));
 }

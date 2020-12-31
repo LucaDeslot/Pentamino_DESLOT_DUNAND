@@ -4,7 +4,6 @@
 #include <stdbool.h>
 #include <string.h>
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_ttf.h>
 #include "main.h"
 #include "sdl_functions.h"
 
@@ -52,7 +51,19 @@ int main() {
     int isWin=0;
     int (*pieces) [MAX_SIZE][MAX_SIZE] = NULL; //Tableau dynamique de tableau 2D d'int, chaque rang du tableau correspond à une pièce
     char numberLevel[3];
+
     sprintf(numberLevel,"%d",currentLevel);
+
+    grid = (int**) malloc(COL_GRID*sizeof(int*));
+    //*grid = (int**) malloc(row*col*sizeof(int) + row*sizeof(int*));
+    for (int i = 0; i < COL_GRID; i++){
+        //pas faire de malloc dans une boucle sinon on perd les pointeurs pour free -> fuite mémoire
+        //TODO : gestion fuite mémoire
+        grid[i] = (int*) malloc(ROW_GRID*sizeof(int));
+        for(int j = 0; j < ROW_GRID; j++){
+            grid[i][j]=0;
+        }
+    }
     createPieces(&pieces, numberLevel, &grid);
     
     SDL_Rect selectedPieceSavedCord[NUMBER_PART_PIECE];
@@ -75,8 +86,6 @@ int main() {
     struct gridSquare *gridSquares = NULL;
     int isPieceBig = 0;
 
-    TTF_Init();
-    TTF_Font *font=TTF_OpenFont("../arial.ttf",28);
     SDL_Color color={0,0,0,0};
 
     SDL_Rect* levels=malloc(getNumberLevel()*sizeof (SDL_Rect));
@@ -228,6 +237,7 @@ int main() {
         }
 
         displayPieces(&window,&SDL_Pieces, &pieces, 12, rankPieceSelected);
+
         displayGrid(COL_GRID, ROW_GRID, &window, &gridSquares, SDL_Pieces);
 
 
@@ -270,6 +280,10 @@ int main() {
         SDL_RenderPresent(renderer);
     }
 
+    SDL_SetRenderDrawColor(renderer,0,0,0,255);
+    SDL_Surface* win=SDL_LoadBMP("../win.bmp");
+    SDL_Texture* winText=SDL_CreateTextureFromSurface(renderer,win);
+
     while(!exit){
         while(SDL_PollEvent(&event)){
             if(event.type==SDL_QUIT){
@@ -284,14 +298,13 @@ int main() {
         if(isWin){
             isWin=0;//pour éviter une boucle infinie
             //fenêtre de fin
-
-            SDL_SetRenderDrawColor(renderer,0,0,0,255);
-            SDL_Surface* win=SDL_LoadBMP("../win.bmp");
-            SDL_Texture* winText=SDL_CreateTextureFromSurface(renderer,win);
             SDL_RenderCopy(renderer,winText,NULL,NULL);
             SDL_RenderPresent(renderer);
         }
     }
+
+    SDL_DestroyTexture(winText);
+    SDL_FreeSurface(win);
 
     //TODO libération mémoire free texture & surface
     for(int i=0;i<getNumberLevel();i++){
@@ -303,7 +316,11 @@ int main() {
 
     free(levels);
     free(pieces);
-    free(grid);//alloué dans createPieces
+    for(int i=0;i<COL_GRID;i++){
+        free(grid[i]);//alloué dans createPieces
+    }
+    free(grid);
+    free(gridSquares);
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
 
@@ -317,12 +334,11 @@ int main() {
 void createPieces(int (**pieces)[MAX_SIZE][MAX_SIZE], char* levelNumber, int*** grid){
 
     //ouverture du fichier et allocation mémoire du tableau de pièce
-    char* fileName;
-    getFileNameFromLevel(levelNumber, &fileName);
+    char fileName[14];
+    getFileNameFromLevel(levelNumber, fileName);
     FILE* file = fopen(fileName, "r");
     //TODO
     //soucis avec fileName, il faut pas allouer fileName dynamiquement dans la fonction getFileName..() sinon on perds le pointeur pour libérer ensuite
-    free(fileName);
     *pieces = malloc(sizeof(int[MAX_SIZE][MAX_SIZE])*findPiecesNumber(levelNumber));
 
     char readChar = 0; //Pour lire le charactère du fichier
@@ -343,17 +359,6 @@ void createPieces(int (**pieces)[MAX_SIZE][MAX_SIZE], char* levelNumber, int*** 
             endGrid = 1;
         } else {
             row++;
-        }
-    }
-
-    *grid = (int**) malloc(col*sizeof(int*));
-    //*grid = (int**) malloc(row*col*sizeof(int) + row*sizeof(int*));
-    for (int i = 0; i < col; i++){
-        //pas faire de malloc dans une boucle sinon on perd les pointeurs pour free -> fuite mémoire
-        //TODO : gestion fuite mémoire
-        (*grid)[i] = (int*) malloc(row*sizeof(int));
-        for(int j = 0; j < row; j++){
-            (*grid)[i][j]=0;
         }
     }
 
@@ -419,8 +424,8 @@ int findPiecesNumber(char *levelNumber){
     int readChar = 0;
     int nbPiece = 0;
     bool emptyRow = true;
-    char* fileName;
-    getFileNameFromLevel(levelNumber,&fileName);
+    char fileName[14];
+    getFileNameFromLevel(levelNumber,fileName);
     FILE* file = fopen(fileName, "r");
 
     do {
@@ -440,10 +445,9 @@ int findPiecesNumber(char *levelNumber){
     return nbPiece; // Le code compte à partir de la première pièce, inutile de retirer la grille en faisant -1
 }
 
-void getFileNameFromLevel(char* levelNumber, char (**fileName)) {
-    *fileName=(char*)malloc(sizeof(char)*14);
+void getFileNameFromLevel(char* levelNumber, char fileName[14]) {
     //concaténation pour le nom du fichier à parcourir
-    strcpy(*fileName,"../level");// ../ car l'exe se créer dans CMakeFiles/
-    strcat(*fileName, levelNumber);
-    strcat(*fileName, ".txt");
+    strcpy(fileName,"../level");// ../ car l'exe se créer dans CMakeFiles/
+    strcat(fileName, levelNumber);
+    strcat(fileName, ".txt");
 }

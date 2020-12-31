@@ -45,4 +45,3 @@ void placePiece(struct gridSquare *grid, int gridSize, int rankSelectedPiece, st
 int getGridSquareWithPiece(struct gridSquare *grid, int gridSize ,SDL_Rect piece);
 void razGrid(struct gridSquare *grid, int gridSize);
 void putPieceOnGrid(struct gridSquare *grid, int gridSize, struct piece (*pieces)[12], struct color color, int *rankPieceSelected);
-SDL_Texture* loadText(const char* message, SDL_Renderer* renderer, TTF_Font *font, SDL_Color color);
