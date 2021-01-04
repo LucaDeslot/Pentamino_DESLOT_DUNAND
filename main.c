@@ -6,8 +6,10 @@
 #include <SDL2/SDL.h>
 #include "main.h"
 #include "sdl_functions.h"
+#include <unistd.h>
 
 int main() {
+
     int currentLevel=0;
     changeLevel:;
 
@@ -64,8 +66,9 @@ int main() {
             grid[i][j]=0;
         }
     }
+
     createPieces(&pieces, numberLevel, &grid);
-    
+
     SDL_Rect selectedPieceSavedCord[NUMBER_PART_PIECE];
     SDL_Point mousePosition;
     SDL_Point clickedPoint;
@@ -86,15 +89,13 @@ int main() {
     struct gridSquare *gridSquares = NULL;
     int isPieceBig = 0;
 
-    SDL_Color color={0,0,0,0};
-
     SDL_Rect* levels=malloc(getNumberLevel()*sizeof (SDL_Rect));
-    SDL_Surface** images=(SDL_Surface*)malloc(getNumberLevel()*sizeof (SDL_Surface*));
-    SDL_Texture** textures=(SDL_Texture*)malloc(getNumberLevel()*sizeof(SDL_Texture*));
+    SDL_Surface** images=(SDL_Surface**)malloc(getNumberLevel()*sizeof (SDL_Surface*));
+    SDL_Texture** textures=(SDL_Texture**)malloc(getNumberLevel()*sizeof(SDL_Texture*));
     int posLevelX=WIDTH_SCREEN*0.1;
     int posLevelY=HEIGHT_SCREEN*0.8;
 
-    char nameFile[8];
+    char nameFile[5];
     for(int i=0;i<getNumberLevel();i++){
         levels[i].x=posLevelX;
         levels[i].y=posLevelY;
@@ -104,15 +105,14 @@ int main() {
         levels[i].w=levels[i].h=70;
 
         memset(nameFile,0,sizeof (nameFile));
-        strcat(nameFile,"../");
-        nameFile[3]=i+49;
+        //strcat(nameFile,"");
+        nameFile[0]=i+49;
         strcat(nameFile,".bmp");
         images[i]=SDL_LoadBMP(nameFile);
         textures[i]=SDL_CreateTextureFromSurface(renderer,images[i]);
     }
 
     int flagLevelChoice=0;//faux car on prend le niveau de base -> level0
-
     while(!exit && !isWin){//boucle principale du jeu
         //TODO: il faut que numberPieces soit dynamique, utiliser la fonction findPiecesNumber() ?
 
@@ -407,7 +407,7 @@ https://waytolearnx.com/2019/09/lister-les-fichiers-dans-un-repertoire-en-c.html
 int getNumberLevel(){
     int numberLevel=0;
     struct dirent *dir;
-    DIR *d=opendir("../");
+    DIR *d=opendir(".");
     if (d){
         while ((dir = readdir(d)) != NULL){
             if(strstr(dir->d_name,"level")!=NULL){//s'il y a un fichier level...
@@ -430,6 +430,7 @@ int findPiecesNumber(char *levelNumber){
 
     do {
         readChar = fgetc(file);
+
         if(readChar == '#'){
             emptyRow = false;
         } else if(readChar == '\n'){
@@ -441,13 +442,14 @@ int findPiecesNumber(char *levelNumber){
             }
         }
     }while(readChar != EOF);
+
     fclose(file);
     return nbPiece; // Le code compte à partir de la première pièce, inutile de retirer la grille en faisant -1
 }
 
 void getFileNameFromLevel(char* levelNumber, char fileName[14]) {
     //concaténation pour le nom du fichier à parcourir
-    strcpy(fileName,"../level");// ../ car l'exe se créer dans CMakeFiles/
+    strcpy(fileName,"level");// ../ car l'exe se créer dans CMakeFiles/
     strcat(fileName, levelNumber);
     strcat(fileName, ".txt");
 }
